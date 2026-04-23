@@ -14,6 +14,10 @@ import './css/live-runtime.css';
 import './css/highlighting.css';
 import './css/reveal.css';
 
+import { SqlEvaluator } from "./evaluate-sql.js";
+import { SqlGrader } from "./grader-sql.js";
+import { SqlEnvironment } from "./environment-sql.js";
+
 type WebRInitData = {
   packages: {
     pkgs: string[],
@@ -109,6 +113,9 @@ export {
   WebREvaluator,
   WebRGrader,
   WebREnvironment,
+  SqlEvaluator,
+  SqlGrader,
+  SqlEnvironment,
   highlightR,
   highlightPython,
   interpolate,
@@ -118,4 +125,5 @@ export {
   b64Encode,
   b64Decode,
   collapsePath,
+  
 }
