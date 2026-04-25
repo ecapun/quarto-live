@@ -69,6 +69,9 @@ declare global {
       WebREvaluator: typeof WebREvaluator;
       WebRGrader: typeof WebRGrader;
       WebREnvironment: typeof WebREnvironment;
+      SqlEvaluator: typeof SqlEvaluator;
+      SqlGrader: typeof SqlGrader;
+      SqlEnvironment: typeof SqlEnvironment;
       highlightR: typeof highlightR;
       highlightPython: typeof highlightPython;
       interpolate: typeof interpolate;
@@ -92,6 +95,9 @@ window._exercise_ojs_runtime = {
   WebREvaluator,
   WebRGrader,
   WebREnvironment,
+  SqlEvaluator,
+  SqlGrader,
+  SqlEnvironment,
   highlightR,
   highlightPython,
   interpolate,

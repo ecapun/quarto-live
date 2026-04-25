@@ -1,15 +1,13 @@
 import { PGlite } from "@electric-sql/pglite";
-
-import type {
-  EvaluateOptions,
-  ExerciseEvaluator,
+import { Indicator } from "./indicator";
+import type { EnvLabel } from "./environment";
+import {
   EvaluateContext,
+  EvaluateOptions,
+  EvaluateValue,
+  ExerciseEvaluator,
   OJSEvaluateElement,
-} from "./evaluate.js";
-import type {
-  EngineEnvironment,
-  EnvironmentManager,
-} from "./environment.js";
+} from "./evaluate";
 
 type SqlEvaluateResult = {
   engine: "sql";
@@ -27,80 +25,153 @@ type SqlEvaluateResult = {
 export class SqlEvaluator implements ExerciseEvaluator {
   static dbs: Map<string, PGlite> = new Map();
 
+  container: OJSEvaluateElement;
   context: EvaluateContext;
   options: EvaluateOptions;
-  envManager: EnvironmentManager<EngineEnvironment>;
-  container: OJSEvaluateElement;
+  nullResult: EvaluateValue;
 
-  constructor(
-    options: EvaluateOptions,
-    envManager: EnvironmentManager<EngineEnvironment>,
-    container: OJSEvaluateElement
-  ) {
-    this.options = options;
-    this.envManager = envManager;
-    this.container = container;
+  // nur damit das Interface erfüllt ist
+  envManager: any;
 
-    this.context = {
-      code: "",
-      options,
-    };
+  constructor(context: EvaluateContext) {
+    this.container = this.newContainer();
+    this.context = context;
+    this.nullResult = { result: null, evaluate_result: null, evaluator: this };
+    this.container.value = this.nullResult;
+
+    this.options = Object.assign(
+      {
+        envir: "global",
+        eval: true,
+        echo: false,
+        warning: true,
+        error: true,
+        include: true,
+        output: true,
+        timelimit: 30,
+        canvas: false,
+      },
+      context.options
+    );
+
+    this.envManager = null;
   }
 
-  private static async getDb(envir = "global"): Promise<PGlite> {
-    let db = SqlEvaluator.dbs.get(envir);
+  newContainer(): OJSEvaluateElement {
+    const container = document.createElement("div") as OJSEvaluateElement;
+    container.classList.add("cell-output-container");
+    container.classList.add("cell-output-container-sql");
+    return container;
+  }
 
+  static async getDb(label: string): Promise<PGlite> {
+    let db = SqlEvaluator.dbs.get(label);
     if (!db) {
       db = await PGlite.create();
-      SqlEvaluator.dbs.set(envir, db);
+      SqlEvaluator.dbs.set(label, db);
+    }
+    return db;
+  }
+
+  getSetupCode(): string | undefined {
+    const exId = this.options.exercise;
+    if (!exId) return;
+
+    const setup = document.querySelectorAll(
+      `script[type="exercise-setup-${exId}-contents"]`
+    );
+
+    if (setup.length > 0) {
+      if (setup.length > 1) {
+        console.warn(`Multiple \`setup\` blocks found for exercise "${exId}", using the first.`);
+      }
+      const block = JSON.parse(atob(setup[0].textContent || ""));
+      return block.code;
+    }
+  }
+
+  async process(inputs: { [key: string]: any }): Promise<void> {
+    if (!this.options.eval) {
+      this.container = this.asSourceHTML(this.context.code);
+      this.container.value = this.nullResult;
+      return;
     }
 
-    return db;
+    let ind = this.context.indicator;
+    if (!this.context.indicator) {
+      ind = new Indicator();
+    }
+    ind.running();
+
+    try {
+      void inputs;
+
+      const envir = this.options.envir || "global";
+
+      const setup = this.getSetupCode();
+      if (setup && setup.trim() !== "") {
+        await this.evaluate(setup, envir);
+      }
+
+      const result = await this.evaluate(this.context.code, envir);
+
+      this.container = await this.asHtml(result);
+
+      if (!this.options.output) {
+        const value = this.container.value;
+        this.container = this.newContainer();
+        this.container.value = value;
+      }
+    } finally {
+      ind.finished();
+      if (!this.context.indicator) ind.destroy();
+    }
   }
 
   async evaluate(
     code: string,
-    envir?: string,
-    options?: EvaluateOptions
-  ): Promise<SqlEvaluateResult> {
-    const effectiveOptions = options ?? this.options;
-    const effectiveEnvir = envir ?? effectiveOptions.envir ?? "global";
+    envLabel: EnvLabel,
+    options: EvaluateOptions = this.options
+  ): Promise<SqlEvaluateResult | null> {
+    if (code == null || code.trim() === "") {
+      return null;
+    }
 
-    this.context = {
-      code,
-      options: effectiveOptions,
-    };
+    const db = await SqlEvaluator.getDb(String(envLabel));
 
     try {
-      const db = await SqlEvaluator.getDb(effectiveEnvir);
-      const rawResult = await db.exec(code);
+    const rawResult = await db.exec(code);
 
-      const firstResult = Array.isArray(rawResult) ? rawResult[0] : null;
-      const rows = Array.isArray(firstResult?.rows) ? firstResult.rows : [];
-      const columns = Array.isArray(firstResult?.fields)
-        ? firstResult.fields.map((field: any) => field.name)
-        : rows.length > 0
-          ? Object.keys(rows[0] as Record<string, unknown>)
-          : [];
+    const results = Array.isArray(rawResult) ? rawResult : [rawResult];
+    const tableResult =
+      [...results].reverse().find((r: any) => Array.isArray(r?.rows) && r.rows.length > 0) ??
+      results[results.length - 1];
 
-      if (rows.length > 0) {
-        return {
-          engine: "sql",
-          code,
-          envir: effectiveEnvir,
-          success: true,
-          output: {
-            kind: "table",
-            columns,
-            rows: rows as Record<string, unknown>[],
-          },
-        };
-      }
+    const rows = Array.isArray(tableResult?.rows) ? tableResult.rows : [];
+    const columns = Array.isArray(tableResult?.fields)
+      ? tableResult.fields.map((field: any) => field.name)
+      : rows.length > 0
+        ? Object.keys(rows[0] as Record<string, unknown>)
+        : [];
+
+    if (rows.length > 0) {
+      return {
+        engine: "sql",
+        code,
+        envir: String(envLabel),
+        success: true,
+        output: {
+          kind: "table",
+          columns,
+          rows: rows as Record<string, unknown>[],
+        },
+      };
+    }
 
       return {
         engine: "sql",
         code,
-        envir: effectiveEnvir,
+        envir: String(envLabel),
         success: true,
         output: {
           kind: "text",
@@ -111,7 +182,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
       return {
         engine: "sql",
         code,
-        envir: effectiveEnvir,
+        envir: String(envLabel),
         success: false,
         output: {
           kind: "text",
@@ -121,53 +192,63 @@ export class SqlEvaluator implements ExerciseEvaluator {
     }
   }
 
-  async process(inputs: { [key: string]: any }): Promise<void> {
-    void inputs;
+  asSourceHTML(code: string): OJSEvaluateElement {
+    const sourceDiv = document.createElement("div") as OJSEvaluateElement;
+    const sourcePre = document.createElement("pre");
+    sourceDiv.className = "sourceCode";
+    sourcePre.className = "sourceCode sql";
+    sourcePre.textContent = code;
+    sourceDiv.appendChild(sourcePre);
+    return sourceDiv;
   }
 
-  async asOjs(value: SqlEvaluateResult): Promise<any> {
-    return value;
-  }
+  async asHtml(value: SqlEvaluateResult | null): Promise<OJSEvaluateElement> {
+    const container = this.newContainer();
+    container.value = this.nullResult;
 
-  async asHtml(value: SqlEvaluateResult): Promise<OJSEvaluateElement> {
-    const el = document.createElement("div") as OJSEvaluateElement;
-
-    if (value.output.kind === "table" && value.output.columns && value.output.rows) {
-      const thead = `
-        <thead>
-          <tr>
-            ${value.output.columns.map((col) => `<th>${col}</th>`).join("")}
-          </tr>
-        </thead>
-      `;
-
-      const tbody = `
-        <tbody>
-          ${value.output.rows
-            .map(
-              (row) => `
-                <tr>
-                  ${value.output.columns!
-                    .map((col) => `<td>${String(row[col] ?? "")}</td>`)
-                    .join("")}
-                </tr>
-              `
-            )
-            .join("")}
-        </tbody>
-      `;
-
-      el.innerHTML = `<table>${thead}${tbody}</table>`;
-    } else {
-      el.innerHTML = `<pre>${value.output.value ?? ""}</pre>`;
+    if (!value) {
+      return container;
     }
 
-    el.value = {
-      evaluator: this,
-      result: value,
-      evaluate_result: value,
-    };
+    if (value.output.kind === "table" && value.output.columns && value.output.rows) {
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
 
-    return el;
+      for (const col of value.output.columns) {
+        const th = document.createElement("th");
+        th.textContent = col;
+        headRow.appendChild(th);
+      }
+
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      for (const row of value.output.rows) {
+        const tr = document.createElement("tr");
+        for (const col of value.output.columns) {
+          const td = document.createElement("td");
+          td.textContent = String(row[col] ?? "");
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+
+      table.appendChild(tbody);
+      container.appendChild(table);
+    } else {
+      const pre = document.createElement("pre");
+      pre.textContent = value.output.value ?? "";
+      container.appendChild(pre);
+    }
+
+    container.value.result = value;
+    container.value.evaluate_result = value;
+    return container;
+  }
+
+  async asOjs(value: SqlEvaluateResult | null): Promise<any> {
+    return value;
   }
 }

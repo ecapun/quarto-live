@@ -3,6 +3,7 @@ local tinyyaml = require "resources/tinyyaml"
 local cell_options = {
   webr = { eval = true },
   pyodide = { eval = true },
+  sql = { eval = true },
 }
 
 local live_options = {
@@ -18,6 +19,7 @@ local block_id = 0
 
 local include_webr = false
 local include_pyodide = false
+local include_sql = false
 
 local function json_as_b64(obj)
   local json_string = quarto.json.encode(obj)
@@ -397,6 +399,45 @@ function WebRCodeBlock(code)
   })
 end
 
+function SqlCodeBlock(code)
+  block_id = block_id + 1
+
+  function append_ojs_template(template, template_vars)
+    local file = io.open(quarto.utils.resolve_path("templates/" .. template), "r")
+    assert(file)
+    local content = file:read("*a")
+    for k, v in pairs(template_vars) do
+      content = string.gsub(content, "{{" .. k .. "}}", v)
+    end
+
+    table.insert(ojs_definitions.contents, 1, {
+      methodName = "interpret",
+      cellName = "sql-" .. block_id,
+      inline = false,
+      source = content,
+    })
+  end
+
+  local block = ParseBlock(code, "sql")
+
+  local input = "{" .. table.concat(block.attr.input or {}, ", ") .. "}"
+  local ojs_vars = {
+    block_id = block_id,
+    block_input = input,
+  }
+
+  append_ojs_template("sql-evaluate.ojs", ojs_vars)
+
+  return pandoc.Div({
+    pandoc.Div({}, pandoc.Attr("sql-" .. block_id, { "exercise-cell" })),
+    pandoc.RawBlock(
+      "html",
+      "<script type=\"sql-" .. block_id .. "-contents\">\n" ..
+      json_as_b64(block) .. "\n</script>"
+    )
+  })
+end
+
 function InterpolatedBlock(block, language)
   block_id = block_id + 1
 
@@ -446,6 +487,15 @@ function CodeBlock(code)
     -- Client side Python code block
     include_pyodide = true
     return PyodideCodeBlock(code)
+  end
+
+    if (
+        code.classes:includes("{sql}") or
+        code.classes:includes("sql") or
+        code.classes:includes("{sql-pglite}")
+      ) then
+    include_sql = true
+    return SqlCodeBlock(code)
   end
 
   -- Non-interactive code block containing OJS variables
@@ -656,7 +706,12 @@ function Pandoc(doc)
     scripts = {
       { path = "resources/live-runtime.js", attribs = { type = "module" } },
     },
-    resources = { "resources/pyodide-worker.js" },
+    resources = {
+      "resources/pyodide-worker.js",
+      "resources/pglite.wasm",
+      "resources/pglite.data",
+      "resources/initdb.wasm",
+    },
     stylesheets = { "resources/live-runtime.css" },
   })
 
