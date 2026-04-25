@@ -13,7 +13,7 @@ webr:
     - palmerpenguins
 ---
 
-{{< include ../_extensions/live/_knitr.qmd >}}
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
 
 The `quarto-live` extension's OJS integration allows an instructor to write dynamic exercises with parametrised questions and solution code. Such questions would provide a different experience for each learner, or the same learner over time, creating long-term value.
 

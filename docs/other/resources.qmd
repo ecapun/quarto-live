@@ -23,7 +23,7 @@ pyodide:
     - https://raw.githubusercontent.com/mwaskom/seaborn-data/master/flights.csv
 ---
 
-{{< include ../_extensions/live/_knitr.qmd >}}
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
 
 Normally `webr` and `pyodide` code blocks are executed in the reader's web browser, and so resources local to your own machine are not available for use inside the WebAssembly environment. Instead, there is a Virtual Filesystem (VFS) made available that contains only the minimum required to run R or Python code.
 

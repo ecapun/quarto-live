@@ -9,7 +9,7 @@ webr:
 toc: true
 ---
 
-{{< include ../_extensions/live/_knitr.qmd >}}
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
 
 Interactive exercises can be dynamically graded by defining a custom grading algorithm for each exercise. Instructors can use specialised testing logic and return specific feedback for common mistakes.
 

@@ -9,7 +9,7 @@ engine: knitr
 toc: true
 ---
 
-{{< include ../_extensions/live/_knitr.qmd >}}
+{{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
 
 For `webr` interactive code cells the `render-df` document YAML option can be used to change how `data.frame` objects are rendered in the output.
 

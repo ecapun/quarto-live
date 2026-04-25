@@ -1,0 +1,46 @@
+sqlOjs = {
+  const { SqlEvaluator } = window._exercise_ojs_runtime;
+
+  const renderedOjs = {};
+
+  const process = async (context, inputs) => {
+    const evaluator = new SqlEvaluator(context);
+    await evaluator.process(inputs);
+    return evaluator.container;
+  };
+
+  return {
+    renderedOjs,
+    process,
+  };
+}
+
+_sql_value_{{block_id}} = {
+  const { b64Decode } = window._exercise_ojs_runtime;
+
+  const scriptContent = document.querySelector(`script[type="sql-{{block_id}}-contents"]`).textContent;
+  const block = JSON.parse(b64Decode(scriptContent));
+
+  const options = Object.assign(
+    {
+      id: "sql-{{block_id}}-contents",
+      echo: true,
+      output: true,
+      envir: block.attr.envir || "global",
+    },
+    block.attr
+  );
+
+  const result = sqlOjs.process({ code: block.code, options }, {{block_input}});
+
+  if (options.output && !("{{block_id}}" in sqlOjs.renderedOjs)) {
+    const container = document.createElement("div");
+    const spinner = document.createElement("div");
+    spinner.className = "spinner-border spinner-border-sm";
+    container.appendChild(spinner);
+    yield container;
+  }
+
+  sqlOjs.renderedOjs["{{block_id}}"] = true;
+  yield await result;
+}
