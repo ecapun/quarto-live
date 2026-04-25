@@ -6,8 +6,16 @@ filters:
   - _extensions/r-wasm/live/live.lua
 ---
 
+## Setup + Exercise
+
 ```{sql}
-CREATE TABLE demo (id INTEGER, name TEXT);
-INSERT INTO demo VALUES (1, 'Ada');
-SELECT * FROM demo;
+#| setup: true
+#| exercise: demo
+CREATE TABLE people (id INTEGER, name TEXT);
+INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+```{sql}
+#| exercise: demo
+SELECT * FROM people;
 ```

@@ -420,13 +420,38 @@ function SqlCodeBlock(code)
 
   local block = ParseBlock(code, "sql")
 
+  -- Supplementary exercise blocks: setup, check
+  if (block.attr.setup) then
+    assertBlockExercise("setup", "sql", block)
+    return ExerciseDataBlocks("setup", block)
+  end
+
+  if (block.attr.check) then
+    assertBlockExercise("check", "sql", block)
+    if live_options["grading"] then
+      return ExerciseDataBlocks("check", block)
+    else
+      return {}
+    end
+  end
+
+  -- Prepare OJS attributes
   local input = "{" .. table.concat(block.attr.input or {}, ", ") .. "}"
   local ojs_vars = {
     block_id = block_id,
     block_input = input,
   }
 
-  append_ojs_template("sql-evaluate.ojs", ojs_vars)
+  -- Render appropriate OJS depending on block type
+  local ojs_source = nil
+  if (block.attr.exercise) then
+    assertUniqueExercise(block.attr.exercise)
+    ojs_source = "sql-exercise.ojs"
+  else
+    ojs_source = "sql-evaluate.ojs"
+  end
+
+  append_ojs_template(ojs_source, ojs_vars)
 
   return pandoc.Div({
     pandoc.Div({}, pandoc.Attr("sql-" .. block_id, { "exercise-cell" })),
