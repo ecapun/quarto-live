@@ -40,3 +40,16 @@ _sql_value_{{block_id}} = {
   sqlOjs.renderedOjs["{{block_id}}"] = true;
   yield await result;
 }
+
+_sql_feedback_{{block_id}} = {
+  const { SqlGrader } = window._exercise_ojs_runtime;
+  const emptyFeedback = document.createElement("div");
+
+  const evaluator = _sql_value_{{block_id}}?.value?.evaluator;
+  if (!evaluator) return emptyFeedback;
+
+  const grader = new SqlGrader(evaluator);
+  const feedback = await grader.gradeExercise();
+  if (!feedback) return emptyFeedback;
+  return feedback;
+}

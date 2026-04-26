@@ -6,7 +6,7 @@ filters:
   - _extensions/r-wasm/live/live.lua
 ---
 
-## Setup + Exercise
+## Setup + Exercise + Check
 
 ```{sql}
 #| setup: true
@@ -18,4 +18,10 @@ INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
 ```{sql}
 #| exercise: demo
 SELECT * FROM people;
+```
+
+```{sql}
+#| check: true
+#| exercise: demo
+SELECT COUNT(*) = 2 AS ok FROM people;
 ```

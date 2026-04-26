@@ -33,11 +33,16 @@ export class SqlEvaluator implements ExerciseEvaluator {
   // nur damit das Interface erfüllt ist
   envManager: any;
 
+  lastRunSql: string | null;
+  lastRunResult: SqlEvaluateResult | null;
+  lastRunError: string | null;
+
   constructor(context: EvaluateContext) {
     this.container = this.newContainer();
     this.context = context;
     this.nullResult = { result: null, evaluate_result: null, evaluator: this };
     this.container.value = this.nullResult;
+    
 
     this.options = Object.assign(
       {
@@ -55,6 +60,10 @@ export class SqlEvaluator implements ExerciseEvaluator {
     );
 
     this.envManager = null;
+
+    this.lastRunSql = null;
+    this.lastRunResult = null;
+    this.lastRunError = null;
   }
 
   newContainer(): OJSEvaluateElement {
@@ -129,17 +138,17 @@ export class SqlEvaluator implements ExerciseEvaluator {
   }
 
   async evaluate(
-    code: string,
-    envLabel: EnvLabel,
-    options: EvaluateOptions = this.options
-  ): Promise<SqlEvaluateResult | null> {
-    if (code == null || code.trim() === "") {
-      return null;
-    }
+  code: string,
+  envLabel: EnvLabel,
+  options: EvaluateOptions = this.options
+): Promise<SqlEvaluateResult | null> {
+  if (code == null || code.trim() === "") {
+    return null;
+  }
 
-    const db = await SqlEvaluator.getDb(String(envLabel));
+  const db = await SqlEvaluator.getDb(String(envLabel));
 
-    try {
+  try {
     const rawResult = await db.exec(code);
 
     const results = Array.isArray(rawResult) ? rawResult : [rawResult];
@@ -155,7 +164,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
         : [];
 
     if (rows.length > 0) {
-      return {
+      const result: SqlEvaluateResult = {
         engine: "sql",
         code,
         envir: String(envLabel),
@@ -166,31 +175,49 @@ export class SqlEvaluator implements ExerciseEvaluator {
           rows: rows as Record<string, unknown>[],
         },
       };
+
+      this.lastRunSql = code;
+      this.lastRunResult = result;
+      this.lastRunError = null;
+
+      return result;
     }
 
-      return {
-        engine: "sql",
-        code,
-        envir: String(envLabel),
-        success: true,
-        output: {
-          kind: "text",
-          value: "OK",
-        },
-      };
-    } catch (error) {
-      return {
-        engine: "sql",
-        code,
-        envir: String(envLabel),
-        success: false,
-        output: {
-          kind: "text",
-          value: error instanceof Error ? error.message : String(error),
-        },
-      };
-    }
+    const result: SqlEvaluateResult = {
+      engine: "sql",
+      code,
+      envir: String(envLabel),
+      success: true,
+      output: {
+        kind: "text",
+        value: "OK",
+      },
+    };
+
+    this.lastRunSql = code;
+    this.lastRunResult = result;
+    this.lastRunError = null;
+
+    return result;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+
+    this.lastRunSql = code;
+    this.lastRunResult = null;
+    this.lastRunError = message;
+
+    return {
+      engine: "sql",
+      code,
+      envir: String(envLabel),
+      success: false,
+      output: {
+        kind: "text",
+        value: message,
+      },
+    };
   }
+}
 
   asSourceHTML(code: string): OJSEvaluateElement {
     const sourceDiv = document.createElement("div") as OJSEvaluateElement;
