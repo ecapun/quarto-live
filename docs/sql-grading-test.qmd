@@ -6,7 +6,7 @@ filters:
   - _extensions/r-wasm/live/live.lua
 ---
 
-## Fall 1 – korrekt
+## Fall 1 korrekt
 
 ```{sql}
 #| setup: true
@@ -26,7 +26,7 @@ SELECT * FROM people;
 SELECT COUNT(*) = 2 AS ok FROM people;
 ```
 
-## Fall 2 – falsch
+## Fall 2 falsch
 
 ```{sql}
 #| setup: true
@@ -46,7 +46,7 @@ SELECT * FROM people;
 SELECT COUNT(*) = 3 AS ok FROM people;
 ```
 
-## Fall 3 – Check-Fehler
+## Fall 3 Check-Fehler
 
 ```{sql}
 #| setup: true
@@ -66,7 +66,7 @@ SELECT * FROM people;
 SELECT * FROM does_not_exist;
 ```
 
-## Fall 4 – String-Feedback
+## Fall 4 String-Feedback
 
 ```{sql}
 #| setup: true
