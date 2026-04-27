@@ -1,0 +1,87 @@
+---
+title: "SQL Grading Test"
+format: live-html
+engine: jupyter
+filters:
+  - _extensions/r-wasm/live/live.lua
+---
+
+## Fall 1 – korrekt
+
+```{sql}
+#| setup: true
+#| exercise: demo1
+CREATE TABLE people (id INTEGER, name TEXT);
+INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+```{sql}
+#| exercise: demo1
+SELECT * FROM people;
+```
+
+```{sql}
+#| check: true
+#| exercise: demo1
+SELECT COUNT(*) = 2 AS ok FROM people;
+```
+
+## Fall 2 – falsch
+
+```{sql}
+#| setup: true
+#| exercise: demo2
+CREATE TABLE people (id INTEGER, name TEXT);
+INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+```{sql}
+#| exercise: demo2
+SELECT * FROM people;
+```
+
+```{sql}
+#| check: true
+#| exercise: demo2
+SELECT COUNT(*) = 3 AS ok FROM people;
+```
+
+## Fall 3 – Check-Fehler
+
+```{sql}
+#| setup: true
+#| exercise: demo3
+CREATE TABLE people (id INTEGER, name TEXT);
+INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+```{sql}
+#| exercise: demo3
+SELECT * FROM people;
+```
+
+```{sql}
+#| check: true
+#| exercise: demo3
+SELECT * FROM does_not_exist;
+```
+
+## Fall 4 – String-Feedback
+
+```{sql}
+#| setup: true
+#| exercise: demo4
+CREATE TABLE people (id INTEGER, name TEXT);
+INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+```
+
+```{sql}
+#| exercise: demo4
+SELECT * FROM people;
+```
+
+```{sql}
+#| check: true
+#| exercise: demo4
+SELECT 'Not correct yet.' AS ok;
+```
