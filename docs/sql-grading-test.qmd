@@ -1,7 +1,6 @@
 ---
 title: "SQL Grading Test"
 format: live-html
-engine: jupyter
 filters:
   - _extensions/r-wasm/live/live.lua
 ---

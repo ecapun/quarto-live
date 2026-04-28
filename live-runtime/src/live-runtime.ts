@@ -1,7 +1,7 @@
 import * as WebR from 'webr';
 import * as Comlink from 'comlink';
 import type { PyodideAPIWorker, PyodideWorker } from './pyodide-worker';
-import { WebRExerciseEditor, PyodideExerciseEditor } from './editor';
+import { WebRExerciseEditor, PyodideExerciseEditor, SqlExerciseEditor } from './editor';
 import { highlightR, highlightPython, interpolate } from './highlighter';
 import { WebREvaluator } from './evaluate-webr';
 import { PyodideEvaluator } from './evaluate-pyodide';
@@ -69,6 +69,7 @@ declare global {
       WebREvaluator: typeof WebREvaluator;
       WebRGrader: typeof WebRGrader;
       WebREnvironment: typeof WebREnvironment;
+      SqlExerciseEditor: typeof SqlExerciseEditor;
       SqlEvaluator: typeof SqlEvaluator;
       SqlGrader: typeof SqlGrader;
       SqlEnvironment: typeof SqlEnvironment;
@@ -95,6 +96,7 @@ window._exercise_ojs_runtime = {
   WebREvaluator,
   WebRGrader,
   WebREnvironment,
+  SqlExerciseEditor,
   SqlEvaluator,
   SqlGrader,
   SqlEnvironment,
@@ -119,6 +121,7 @@ export {
   WebREvaluator,
   WebRGrader,
   WebREnvironment,
+  SqlExerciseEditor,
   SqlEvaluator,
   SqlGrader,
   SqlEnvironment,

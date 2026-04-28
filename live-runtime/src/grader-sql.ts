@@ -18,6 +18,14 @@ export class SqlGrader extends ExerciseGrader {
       return null;
     }
 
+    if (this.evaluator.lastRunError) {
+      return this.feedbackAsHtmlAlert({
+        correct: false,
+        message: this.evaluator.lastRunError,
+        type: "error",
+      });
+    }
+
     const checkCode = this.getCheckingAlgorithm();
     if (!checkCode || checkCode.trim() === "") {
       return null;

@@ -1,18 +1,5 @@
-_sql_value_{{block_id}} = {
-  const { SqlEvaluator, b64Decode } = window._exercise_ojs_runtime;
-
-  if (!window.__sqlOjs) {
-    window.__sqlOjs = {
-      renderedOjs: {},
-      process: async (context, inputs) => {
-        const evaluator = new SqlEvaluator(context);
-        await evaluator.process(inputs);
-        return evaluator.container;
-      }
-    };
-  }
-
-  const sqlOjs = window.__sqlOjs;
+viewof _sql_editor_{{block_id}} = {
+  const { SqlExerciseEditor, b64Decode } = window._exercise_ojs_runtime;
 
   const scriptContent = document.querySelector(`script[type="sql-{{block_id}}-contents"]`).textContent;
   const block = JSON.parse(b64Decode(scriptContent));
@@ -20,32 +7,38 @@ _sql_value_{{block_id}} = {
   const options = Object.assign(
     {
       id: "sql-{{block_id}}-contents",
-      echo: true,
-      output: true,
       envir: `exercise-env-${block.attr.exercise}`,
+      error: false,
+      caption: "Exercise",
+      completion: false,
     },
     block.attr
   );
 
-  const result = sqlOjs.process({ code: block.code, options }, {{block_input}});
+  const editor = new SqlExerciseEditor(block.code, options);
+  return editor.container;
+}
 
-  if (options.output && !("{{block_id}}" in sqlOjs.renderedOjs)) {
-    const container = document.createElement("div");
-    const spinner = document.createElement("div");
-    spinner.className = "spinner-border spinner-border-sm";
-    container.appendChild(spinner);
-    yield container;
-  }
+viewof _sql_value_{{block_id}} = {
+  const { SqlEvaluator } = window._exercise_ojs_runtime;
 
-  sqlOjs.renderedOjs["{{block_id}}"] = true;
-  yield await result;
+  const context = {
+    code: _sql_editor_{{block_id}}.code,
+    options: _sql_editor_{{block_id}}.options,
+    indicator: _sql_editor_{{block_id}}.indicator,
+  };
+
+  const evaluator = new SqlEvaluator(context);
+  await evaluator.process({});
+
+  return evaluator.container;
 }
 
 _sql_feedback_{{block_id}} = {
   const { SqlGrader } = window._exercise_ojs_runtime;
   const emptyFeedback = document.createElement("div");
 
-  const evaluator = _sql_value_{{block_id}}?.value?.evaluator;
+  const evaluator = _sql_value_{{block_id}}?.evaluator;
   if (!evaluator) return emptyFeedback;
 
   const grader = new SqlGrader(evaluator);

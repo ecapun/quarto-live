@@ -10,6 +10,7 @@ import { syntaxHighlighting } from "@codemirror/language";
 import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 import { python } from "@codemirror/lang-python";
 import { r } from "codemirror-lang-r";
+import { sql } from "@codemirror/lang-sql";
 
 export type EditorValue = {
   code: string | null;
@@ -564,6 +565,52 @@ export class PyodideExerciseEditor extends ExerciseEditor {
     if (!this.options.completion) {
       extensions.push(
         autocompletion({ override: [(...args) => null] })
+      );
+    }
+
+    return extensions;
+  }
+}
+
+export class SqlExerciseEditor extends ExerciseEditor {
+  defaultCaption: string;
+
+  constructor(code: string, options: ExerciseOptions) {
+    super(code, options);
+  }
+
+  render() {
+    this.defaultCaption = "SQL Code";
+    return super.render();
+  }
+
+  languageExtensions() {
+    const language = new Compartment();
+    const tabSize = new Compartment();
+
+    const extensions = [
+      syntaxHighlighting(tagHighlighterTok),
+      language.of(sql()),
+      tabSize.of(EditorState.tabSize.of(2)),
+      Prec.high(
+        keymap.of([
+          {
+            key: "Mod-Enter",
+            run: () => {
+              this.container.dispatchEvent(new CustomEvent("input", {
+                detail: { commit: true }
+              }));
+              return true;
+            },
+          },
+        ])
+      ),
+    ];
+
+    // Explicitly disable autocompletion if requested
+    if (!this.options.completion) {
+      extensions.push(
+        autocompletion({ override: [() => null] })
       );
     }
 
