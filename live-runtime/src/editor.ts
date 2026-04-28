@@ -57,6 +57,47 @@ const icons = {
   play: require('./assets/play.svg') as string,
 }
 
+const SQL_KEYWORDS = [
+  "SELECT",
+  "SELECT *",
+  "FROM",
+  "WHERE",
+  "INSERT",
+  "INTO",
+  "VALUES",
+  "UPDATE",
+  "DELETE",
+  "CREATE",
+  "TABLE",
+  "DROP",
+  "ALTER",
+  "ADD",
+  "JOIN",
+  "LEFT",
+  "RIGHT",
+  "INNER",
+  "OUTER",
+  "ON",
+  "GROUP BY",
+  "ORDER BY",
+  "HAVING",
+  "LIMIT",
+  "OFFSET",
+  "AS",
+  "DISTINCT",
+  "COUNT",
+  "SUM",
+  "AVG",
+  "MIN",
+  "MAX",
+  "AND",
+  "OR",
+  "NOT",
+  "NULL",
+  "TRUE",
+  "FALSE",
+];
+
 // TODO: This should be made optional, or perhaps a less heavy handed approach.
 function hideEmptyPanels() {
   // Look for tabset panels and hide any with no content
@@ -574,6 +615,7 @@ export class PyodideExerciseEditor extends ExerciseEditor {
 
 export class SqlExerciseEditor extends ExerciseEditor {
   defaultCaption: string;
+  static preparedCompletionEnvirs = new Set<string>();
 
   constructor(code: string, options: ExerciseOptions) {
     super(code, options);
@@ -590,6 +632,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
 
     const extensions = [
       syntaxHighlighting(tagHighlighterTok),
+      autocompletion({ override: [(context) => this.doCompletion(context)] }),
       language.of(sql()),
       tabSize.of(EditorState.tabSize.of(2)),
       Prec.high(
@@ -607,7 +650,6 @@ export class SqlExerciseEditor extends ExerciseEditor {
       ),
     ];
 
-    // Explicitly disable autocompletion if requested
     if (!this.options.completion) {
       extensions.push(
         autocompletion({ override: [() => null] })
@@ -615,5 +657,117 @@ export class SqlExerciseEditor extends ExerciseEditor {
     }
 
     return extensions;
+  }
+
+  getExerciseSetupCode(): string | undefined {
+    const exId = this.options.exercise;
+    if (!exId) return;
+
+    const setup = document.querySelectorAll(
+      `script[type="exercise-setup-${exId}-contents"]`
+    );
+
+    if (setup.length > 0) {
+      if (setup.length > 1) {
+        console.warn(`Multiple \`setup\` blocks found for exercise "${exId}", using the first.`);
+      }
+      const block = JSON.parse(atob(setup[0].textContent || ""));
+      return block.code;
+    }
+  }
+
+  async getCompletionDb(): Promise<any | null> {
+    const runtime = (window as any)._exercise_ojs_runtime;
+    const SqlEvaluator = runtime?.SqlEvaluator;
+    if (!SqlEvaluator?.getDb) {
+      return null;
+    }
+
+    const baseEnvir = this.options.envir || "global";
+    const completionEnvir = `${baseEnvir}::completion`;
+    const db = await SqlEvaluator.getDb(completionEnvir);
+
+    if (
+      this.options.exercise &&
+      !SqlExerciseEditor.preparedCompletionEnvirs.has(completionEnvir)
+    ) {
+      const setup = this.getExerciseSetupCode();
+      if (setup && setup.trim() !== "") {
+        try {
+          await db.exec(setup);
+        } catch (error) {
+          console.warn("SQL completion setup failed:", error);
+        }
+      }
+      SqlExerciseEditor.preparedCompletionEnvirs.add(completionEnvir);
+    }
+
+    return db;
+  }
+
+  async getSchemaSuggestions(): Promise<string[]> {
+    const db = await this.getCompletionDb();
+    if (!db) return [];
+
+    try {
+      const tableResult = await db.exec(`
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        ORDER BY table_name
+      `);
+
+      const columnResult = await db.exec(`
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+        ORDER BY column_name
+      `);
+
+      const tableRows = Array.isArray(tableResult) ? tableResult[0]?.rows ?? [] : [];
+      const columnRows = Array.isArray(columnResult) ? columnResult[0]?.rows ?? [] : [];
+
+      const tables = tableRows
+        .map((row: any) => String(row.table_name))
+        .filter(Boolean);
+
+      const columns = columnRows
+        .map((row: any) => String(row.column_name))
+        .filter(Boolean);
+
+      return [...new Set([...tables, ...columns])];
+    } catch (error) {
+      console.warn("SQL schema completion failed:", error);
+      return [];
+    }
+  }
+
+  async doCompletion(context: CompletionContext) {
+    if (!this.options.completion) return null;
+
+    const match = context.matchBefore(/[A-Za-z_][A-Za-z0-9_]*/);
+    const from = match ? match.from : context.pos;
+    const text = match ? match.text : "";
+
+    if (!context.explicit && !match) {
+      return null;
+    }
+
+    const schemaSuggestions = await this.getSchemaSuggestions();
+
+    const options = [...new Set([...SQL_KEYWORDS, ...schemaSuggestions])]
+      .filter((label) => {
+        if (!text) return true;
+        return label.toLowerCase().startsWith(text.toLowerCase());
+      })
+      .map((label) => ({
+        label,
+        boost: SQL_KEYWORDS.includes(label) ? 50 : 100,
+      }));
+
+    return {
+      from,
+      options,
+    };
   }
 }

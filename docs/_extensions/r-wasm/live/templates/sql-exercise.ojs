@@ -10,7 +10,7 @@ viewof _sql_editor_{{block_id}} = {
       envir: `exercise-env-${block.attr.exercise}`,
       error: false,
       caption: "Exercise",
-      completion: false,
+      completion: true,
     },
     block.attr
   );
