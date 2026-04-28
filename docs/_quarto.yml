@@ -11,6 +11,10 @@ website:
   sidebar:
     contents:
       - href: index.qmd
+      - section: SQL integration
+        contents:
+          - sql-grading-test.qmd
+          - sql-test.qmd
       - section: Getting Started
         contents:
           - getting_started/installation.qmd
