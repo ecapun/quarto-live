@@ -1,6 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { Indicator } from "./indicator";
-import type { EnvLabel } from "./environment";
+import { EnvironmentManager, EnvLabel, SqlEnvironment } from "./environment";
 import {
   EvaluateContext,
   EvaluateOptions,
@@ -8,6 +8,7 @@ import {
   ExerciseEvaluator,
   OJSEvaluateElement,
 } from "./evaluate";
+import { b64Decode } from "./utils";
 
 type SqlEvaluateResult = {
   engine: "sql";
@@ -23,23 +24,16 @@ type SqlEvaluateResult = {
 };
 
 export class SqlEvaluator implements ExerciseEvaluator {
-  // kept for editor/autocomplete support
-  static dbs: Map<string, PGlite> = new Map();
 
   container: OJSEvaluateElement;
   context: EvaluateContext;
   options: EvaluateOptions;
   nullResult: EvaluateValue;
-
-  // SQL does not yet use the shared EnvironmentManager abstraction directly
-  envManager: any;
+  envManager: EnvironmentManager<SqlEnvironment>;
 
   lastRunSql: string | null;
   lastRunResult: SqlEvaluateResult | null;
   lastRunError: string | null;
-
-  // per-evaluation-run databases, closer to Quarto Live prep/result model
-  runDbs: Map<string, PGlite>;
 
   constructor(context: EvaluateContext) {
     this.container = this.newContainer();
@@ -62,13 +56,14 @@ export class SqlEvaluator implements ExerciseEvaluator {
       context.options
     );
 
-    this.envManager = null;
+    this.envManager = new EnvironmentManager(
+      SqlEnvironment.instance(),
+      { ...context, options: this.options }
+    );
 
     this.lastRunSql = null;
     this.lastRunResult = null;
     this.lastRunError = null;
-
-    this.runDbs = new Map();
   }
 
   newContainer(): OJSEvaluateElement {
@@ -78,14 +73,11 @@ export class SqlEvaluator implements ExerciseEvaluator {
     return container;
   }
 
-  // kept for autocomplete / metadata lookup
+  // Used by SQL autocomplete to inspect the current schema without requiring
+  // an evaluator instance. Callers must ensure that any required setup code
+  // has already been executed for the selected environment.
   static async getDb(label: string): Promise<PGlite> {
-    let db = SqlEvaluator.dbs.get(label);
-    if (!db) {
-      db = await PGlite.create();
-      SqlEvaluator.dbs.set(label, db);
-    }
-    return db;
+    return await SqlEnvironment.instance().get(label);
   }
 
   getSetupCode(): string | undefined {
@@ -100,32 +92,8 @@ export class SqlEvaluator implements ExerciseEvaluator {
       if (setup.length > 1) {
         console.warn(`Multiple \`setup\` blocks found for exercise "${exId}", using the first.`);
       }
-      const block = JSON.parse(atob(setup[0].textContent || ""));
+      const block = JSON.parse(b64Decode(setup[0].textContent || ""));
       return block.code;
-    }
-  }
-
-  async createFreshDb(): Promise<PGlite> {
-    return await PGlite.create();
-  }
-
-  async prepareRunDbs(): Promise<void> {
-    this.runDbs.clear();
-
-    const setup = this.getSetupCode();
-
-    const prepDb = await this.createFreshDb();
-    this.runDbs.set("prep", prepDb);
-
-    if (setup && setup.trim() !== "") {
-      await this.executeSql(setup, prepDb, "prep", false);
-    }
-
-    const resultDb = await this.createFreshDb();
-    this.runDbs.set("result", resultDb);
-
-    if (setup && setup.trim() !== "") {
-      await this.executeSql(setup, resultDb, "result", false);
     }
   }
 
@@ -136,6 +104,11 @@ export class SqlEvaluator implements ExerciseEvaluator {
       return;
     }
 
+    if (this.options.exercise && this.context.code && this.context.code.match(/_{6}_*/g)) {
+      this.container.value.result = null;
+      return;
+    }
+
     let ind = this.context.indicator;
     if (!this.context.indicator) {
       ind = new Indicator();
@@ -143,28 +116,40 @@ export class SqlEvaluator implements ExerciseEvaluator {
     ind.running();
 
     try {
-      // SQL currently ignores reactive OJS inputs; this stays explicit for now
-      void inputs;
+      await Promise.all(
+        Object.entries(inputs).map(async ([k, v]) => {
+          await this.envManager.bind(k, v, "prep");
+        })
+      );
 
-      await this.prepareRunDbs();
+      const setup = this.getSetupCode();
+      const resultEnvId = this.envManager.labels.result;
+      const resultExistsBefore = this.envManager.manager.has(resultEnvId);
 
-      const result = await this.evaluate(this.context.code, "result");
+      await this.evaluate(setup, "prep", this.options, false);
+      await this.envManager.create("result", "prep");
 
-      this.container = await this.asHtml(result);
+      if (setup && setup.trim() !== "" && (this.envManager.discard || !resultExistsBefore)) {
+        await this.evaluate(setup, "result", this.options, false);
+      }
 
-      if (!this.options.output) {
-        const value = this.container.value;
-        this.container = this.newContainer();
-        this.container.value = value;
+      const result = await this.evaluate(this.context.code, "result", this.options, true);
+
+      if (!result) {
+        this.container.value.result = null;
+      } else {
+        this.container = await this.asHtml(result);
+
+        if (!this.options.output) {
+          const value = this.container.value;
+          this.container = this.newContainer();
+          this.container.value = value;
+        }
       }
     } finally {
       ind.finished();
       if (!this.context.indicator) ind.destroy();
     }
-  }
-
-  getDbForEnv(envLabel: string): PGlite | undefined {
-    return this.runDbs.get(envLabel);
   }
 
   async evaluate(
@@ -173,17 +158,17 @@ export class SqlEvaluator implements ExerciseEvaluator {
     options: EvaluateOptions = this.options,
     trackRun: boolean = true
   ): Promise<SqlEvaluateResult | null> {
+
+    // WebR/Pyodide can create the result environment from prep.
+    // PGlite databases cannot be cloned in the same way.
+    // Therefore setup is replayed into result when the result DB is new or discarded.
+    // This means that the main code can assume that the setup has been run in the result environment, and can rely on any side effects of the setup (e.g. temp tables) to be present when the main code runs.
     if (code == null || code.trim() === "") {
       return null;
     }
 
-    const label = String(envLabel);
-    const db =
-      this.getDbForEnv(label) ??
-      this.getDbForEnv("result") ??
-      (await this.createFreshDb());
-
-    return await this.executeSql(code, db, label, trackRun, options);
+    const db = await this.envManager.get(envLabel);
+    return await this.executeSql(code, db, String(envLabel), trackRun, options);
   }
 
   async executeCheck(checkCode: string): Promise<SqlEvaluateResult | null> {

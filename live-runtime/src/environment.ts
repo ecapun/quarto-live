@@ -3,9 +3,13 @@ import { PyProxy } from 'pyodide/ffi';
 import { isRObject } from 'webr';
 import type { REnvironment, RObject, Shelter, WebR } from 'webr';
 import { EvaluateContext } from './evaluate';
+import { PGlite } from "@electric-sql/pglite";
 
-export type EngineEnvironment = WebREnvironment | PyodideEnvironment;
-type EnvironmentItem<T> = T extends WebREnvironment ? Promise<REnvironment> : Promise<PyProxy>;
+export type EngineEnvironment = WebREnvironment | PyodideEnvironment | SqlEnvironment;
+type EnvironmentItem<T> =
+  T extends WebREnvironment ? Promise<REnvironment> :
+  T extends SqlEnvironment ? Promise<PGlite> :
+  Promise<PyProxy>;
 
 export type EnvLabels = {
   prep: string;
@@ -245,4 +249,67 @@ export class PyodideEnvironment {
   }
 }
 
+export class SqlEnvironment {
+  static #instance: SqlEnvironment;
+  env: { [key: string]: Promise<PGlite> } = {};
 
+  private constructor() {
+    this.env.global = PGlite.create();
+  }
+
+  static instance(): SqlEnvironment {
+    if (!SqlEnvironment.#instance) {
+      SqlEnvironment.#instance = new SqlEnvironment();
+    }
+    return SqlEnvironment.#instance;
+  }
+
+  has(id: string): boolean {
+    return id in this.env;
+  }
+
+  async get(id: string = "global") {
+    if (!(id in this.env)) {
+      this.env[id] = PGlite.create();
+    }
+    return await this.env[id];
+  }
+
+  async bind(key: string, value: any, id: string = "global") {
+    void key;
+    void value;
+    void id;
+  }
+
+  async create(target_id: string, parent_id: string, discard: boolean = true) {
+    if (target_id === parent_id || target_id === "global") {
+      return this.get(target_id);
+    }
+
+    if (target_id in this.env) {
+      if (!discard) {
+        return this.get(target_id);
+      }
+      await this.destroy(target_id);
+    }
+
+    this.env[target_id] = PGlite.create();
+    return await this.env[target_id];
+  }
+
+  async destroy(id: string) {
+    if (id === "global" || !(id in this.env)) {
+      return;
+    }
+
+    const db = await this.env[id];
+
+    try {
+      await db.close?.();
+    } catch {
+      // ignore close errors
+    }
+
+    delete this.env[id];
+  }
+}

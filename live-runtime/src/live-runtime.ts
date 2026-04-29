@@ -5,18 +5,16 @@ import { WebRExerciseEditor, PyodideExerciseEditor, SqlExerciseEditor } from './
 import { highlightR, highlightPython, interpolate } from './highlighter';
 import { WebREvaluator } from './evaluate-webr';
 import { PyodideEvaluator } from './evaluate-pyodide';
-import { WebREnvironment, PyodideEnvironment } from './environment';
+import { SqlEvaluator } from "./evaluate-sql";
+import { WebREnvironment, PyodideEnvironment, SqlEnvironment } from './environment';
 import { WebRGrader } from './grader-webr';
 import { PyodideGrader } from './grader-pyodide';
+import { SqlGrader } from "./grader-sql";
 import { comlinkTransfer, imageBitmapTransfer, mapTransfer, proxyTransfer } from './pyodide-proxy';
 import { b64Encode, b64Decode, collapsePath } from './utils';
 import './css/live-runtime.css';
 import './css/highlighting.css';
 import './css/reveal.css';
-
-import { SqlEvaluator } from "./evaluate-sql.js";
-import { SqlGrader } from "./grader-sql.js";
-import { SqlEnvironment } from "./environment-sql.js";
 
 type WebRInitData = {
   packages: {
