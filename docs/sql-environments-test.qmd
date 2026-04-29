@@ -1,0 +1,125 @@
+---
+title: "SQL Environment Test"
+format: live-html
+filters:
+  - _extensions/r-wasm/live/live.lua
+---
+
+## Environments in interactive SQL blocks
+
+A normal SQL block without `exercise` uses the default environment `global`.
+
+This means that one SQL block can create tables, and later SQL blocks can use the same tables again. In this first block, we create two global tables: `foo` and `bar`.
+
+```{sql}
+CREATE TABLE foo (id INTEGER, value INTEGER);
+INSERT INTO foo VALUES (1, 1), (2, 3), (3, 5), (4, 7);
+
+CREATE TABLE bar (id INTEGER, value INTEGER);
+INSERT INTO bar VALUES (1, 2), (2, 4), (3, 6), (4, 8);
+```
+
+The next SQL block can access `foo`, because it was created in the global environment above.
+
+```{sql}
+SELECT value + 42 AS result
+FROM foo;
+```
+
+## Exercise environments
+
+SQL exercises use their own exercise environment by default. This helps to keep exercises separate from each other.
+
+The setup block creates the start state for the exercise.
+
+```{sql}
+#| setup: true
+#| exercise: ex_1
+CREATE TABLE products (id INTEGER, name TEXT);
+INSERT INTO products VALUES (1, 'Laptop'), (2, 'Mouse');
+```
+
+The learner code runs in the exercise environment. It can access the table from the setup block.
+
+```{sql}
+#| exercise: ex_1
+SELECT * FROM products;
+```
+
+The check block is linked to the same exercise. It checks if the table has exactly two rows.
+
+```{sql}
+#| check: true
+#| exercise: ex_1
+SELECT COUNT(*) = 2 AS ok FROM products;
+```
+
+## Exercise isolation from global
+
+Normal SQL blocks and exercise SQL blocks should not always share the same state.
+
+The table `people` was created in the global environment. This exercise uses its own exercise environment, so it should not see `people`.
+
+```{sql}
+#| exercise: ex_isolated
+SELECT * FROM people;
+```
+
+Expected result: this block should show an error, because `people` does not exist inside this exercise environment.
+
+## Manually managing the environment
+
+Sometimes exercises should build on each other. Quarto Live supports this with the `envir` option.
+
+Exercises with the same manual `envir` value share the same environment. This can be used for follow-on exercises.
+
+### Follow-on exercise 1
+
+This exercise creates a table and inserts one value.
+
+```{sql}
+#| exercise: ex_shared_1
+#| envir: myenv
+DROP TABLE IF EXISTS numbers;
+CREATE TABLE numbers (value INTEGER);
+INSERT INTO numbers VALUES (7);
+SELECT * FROM numbers;
+```
+
+### Follow-on exercise 2
+
+This exercise uses the same environment `myenv`. It can access the table from the previous exercise and insert another value.
+
+```{sql}
+#| exercise: ex_shared_2
+#| envir: myenv
+INSERT INTO numbers VALUES (5);
+SELECT * FROM numbers;
+```
+
+### Follow-on exercise 3
+
+This exercise also uses `myenv`. It can see both inserted values and calculate their sum.
+
+```{sql}
+#| exercise: ex_shared_3
+#| envir: myenv
+SELECT SUM(value) AS total FROM numbers;
+```
+
+Expected result: the total should be `12`.
+
+## Reusing global tables later
+
+The tables `foo` and `bar` were created at the beginning of this document in the global SQL environment.
+
+This later block can still access them, because normal SQL blocks without `exercise` share the same default environment `global`.
+
+```{sql}
+SELECT
+  foo.value AS foo_value,
+  bar.value AS bar_value,
+  foo.value + bar.value AS sum_value
+FROM foo
+JOIN bar ON foo.id = bar.id;
+```
