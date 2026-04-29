@@ -23,6 +23,7 @@ type SqlEvaluateResult = {
 };
 
 export class SqlEvaluator implements ExerciseEvaluator {
+  // kept for editor/autocomplete support
   static dbs: Map<string, PGlite> = new Map();
 
   container: OJSEvaluateElement;
@@ -30,19 +31,21 @@ export class SqlEvaluator implements ExerciseEvaluator {
   options: EvaluateOptions;
   nullResult: EvaluateValue;
 
-  // nur damit das Interface erfüllt ist
+  // SQL does not yet use the shared EnvironmentManager abstraction directly
   envManager: any;
 
   lastRunSql: string | null;
   lastRunResult: SqlEvaluateResult | null;
   lastRunError: string | null;
 
+  // per-evaluation-run databases, closer to Quarto Live prep/result model
+  runDbs: Map<string, PGlite>;
+
   constructor(context: EvaluateContext) {
     this.container = this.newContainer();
     this.context = context;
     this.nullResult = { result: null, evaluate_result: null, evaluator: this };
     this.container.value = this.nullResult;
-    
 
     this.options = Object.assign(
       {
@@ -64,6 +67,8 @@ export class SqlEvaluator implements ExerciseEvaluator {
     this.lastRunSql = null;
     this.lastRunResult = null;
     this.lastRunError = null;
+
+    this.runDbs = new Map();
   }
 
   newContainer(): OJSEvaluateElement {
@@ -73,6 +78,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
     return container;
   }
 
+  // kept for autocomplete / metadata lookup
   static async getDb(label: string): Promise<PGlite> {
     let db = SqlEvaluator.dbs.get(label);
     if (!db) {
@@ -99,6 +105,30 @@ export class SqlEvaluator implements ExerciseEvaluator {
     }
   }
 
+  async createFreshDb(): Promise<PGlite> {
+    return await PGlite.create();
+  }
+
+  async prepareRunDbs(): Promise<void> {
+    this.runDbs.clear();
+
+    const setup = this.getSetupCode();
+
+    const prepDb = await this.createFreshDb();
+    this.runDbs.set("prep", prepDb);
+
+    if (setup && setup.trim() !== "") {
+      await this.executeSql(setup, prepDb, "prep", false);
+    }
+
+    const resultDb = await this.createFreshDb();
+    this.runDbs.set("result", resultDb);
+
+    if (setup && setup.trim() !== "") {
+      await this.executeSql(setup, resultDb, "result", false);
+    }
+  }
+
   async process(inputs: { [key: string]: any }): Promise<void> {
     if (!this.options.eval) {
       this.container = this.asSourceHTML(this.context.code);
@@ -113,16 +143,12 @@ export class SqlEvaluator implements ExerciseEvaluator {
     ind.running();
 
     try {
+      // SQL currently ignores reactive OJS inputs; this stays explicit for now
       void inputs;
 
-      const envir = this.options.envir || "global";
+      await this.prepareRunDbs();
 
-      const setup = this.getSetupCode();
-      if (setup && setup.trim() !== "") {
-        await this.evaluate(setup, envir);
-      }
-
-      const result = await this.evaluate(this.context.code, envir);
+      const result = await this.evaluate(this.context.code, "result");
 
       this.container = await this.asHtml(result);
 
@@ -137,87 +163,118 @@ export class SqlEvaluator implements ExerciseEvaluator {
     }
   }
 
-  async evaluate(
-  code: string,
-  envLabel: EnvLabel,
-  options: EvaluateOptions = this.options
-): Promise<SqlEvaluateResult | null> {
-  if (code == null || code.trim() === "") {
-    return null;
+  getDbForEnv(envLabel: string): PGlite | undefined {
+    return this.runDbs.get(envLabel);
   }
 
-  const db = await SqlEvaluator.getDb(String(envLabel));
+  async evaluate(
+    code: string,
+    envLabel: EnvLabel,
+    options: EvaluateOptions = this.options,
+    trackRun: boolean = true
+  ): Promise<SqlEvaluateResult | null> {
+    if (code == null || code.trim() === "") {
+      return null;
+    }
 
-  try {
-    const rawResult = await db.exec(code);
+    const label = String(envLabel);
+    const db =
+      this.getDbForEnv(label) ??
+      this.getDbForEnv("result") ??
+      (await this.createFreshDb());
 
-    const results = Array.isArray(rawResult) ? rawResult : [rawResult];
-    const tableResult =
-      [...results].reverse().find((r: any) => Array.isArray(r?.rows) && r.rows.length > 0) ??
-      results[results.length - 1];
+    return await this.executeSql(code, db, label, trackRun, options);
+  }
 
-    const rows = Array.isArray(tableResult?.rows) ? tableResult.rows : [];
-    const columns = Array.isArray(tableResult?.fields)
-      ? tableResult.fields.map((field: any) => field.name)
-      : rows.length > 0
-        ? Object.keys(rows[0] as Record<string, unknown>)
-        : [];
+  async executeCheck(checkCode: string): Promise<SqlEvaluateResult | null> {
+    return await this.evaluate(checkCode, "result", this.options, false);
+  }
 
-    if (rows.length > 0) {
+  async executeSql(
+    code: string,
+    db: PGlite,
+    envLabel: string,
+    trackRun: boolean,
+    options: EvaluateOptions = this.options
+  ): Promise<SqlEvaluateResult | null> {
+    void options;
+
+    try {
+      const rawResult = await db.exec(code);
+
+      const results = Array.isArray(rawResult) ? rawResult : [rawResult];
+      const tableResult =
+        [...results].reverse().find((r: any) => Array.isArray(r?.rows) && r.rows.length > 0) ??
+        results[results.length - 1];
+
+      const rows = Array.isArray(tableResult?.rows) ? tableResult.rows : [];
+      const columns = Array.isArray(tableResult?.fields)
+        ? tableResult.fields.map((field: any) => field.name)
+        : rows.length > 0
+          ? Object.keys(rows[0] as Record<string, unknown>)
+          : [];
+
+      if (rows.length > 0) {
+        const result: SqlEvaluateResult = {
+          engine: "sql",
+          code,
+          envir: envLabel,
+          success: true,
+          output: {
+            kind: "table",
+            columns,
+            rows: rows as Record<string, unknown>[],
+          },
+        };
+
+        if (trackRun) {
+          this.lastRunSql = code;
+          this.lastRunResult = result;
+          this.lastRunError = null;
+        }
+
+        return result;
+      }
+
       const result: SqlEvaluateResult = {
         engine: "sql",
         code,
-        envir: String(envLabel),
+        envir: envLabel,
         success: true,
         output: {
-          kind: "table",
-          columns,
-          rows: rows as Record<string, unknown>[],
+          kind: "text",
+          value: "OK",
         },
       };
 
-      this.lastRunSql = code;
-      this.lastRunResult = result;
-      this.lastRunError = null;
+      if (trackRun) {
+        this.lastRunSql = code;
+        this.lastRunResult = result;
+        this.lastRunError = null;
+      }
 
       return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      if (trackRun) {
+        this.lastRunSql = code;
+        this.lastRunResult = null;
+        this.lastRunError = message;
+      }
+
+      return {
+        engine: "sql",
+        code,
+        envir: envLabel,
+        success: false,
+        output: {
+          kind: "text",
+          value: message,
+        },
+      };
     }
-
-    const result: SqlEvaluateResult = {
-      engine: "sql",
-      code,
-      envir: String(envLabel),
-      success: true,
-      output: {
-        kind: "text",
-        value: "OK",
-      },
-    };
-
-    this.lastRunSql = code;
-    this.lastRunResult = result;
-    this.lastRunError = null;
-
-    return result;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-
-    this.lastRunSql = code;
-    this.lastRunResult = null;
-    this.lastRunError = message;
-
-    return {
-      engine: "sql",
-      code,
-      envir: String(envLabel),
-      success: false,
-      output: {
-        kind: "text",
-        value: message,
-      },
-    };
   }
-}
 
   asSourceHTML(code: string): OJSEvaluateElement {
     const sourceDiv = document.createElement("div") as OJSEvaluateElement;

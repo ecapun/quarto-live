@@ -40,8 +40,7 @@ export class SqlGrader extends ExerciseGrader {
   }
 
   async evaluateCheck(checkCode: string): Promise<SqlFeedback | null> {
-    const envir = this.evaluator.options.envir || "global";
-    const result = await this.evaluator.evaluate(checkCode, envir, this.options);
+    const result = await this.evaluator.executeCheck(checkCode);
 
     if (!result) {
       return {
