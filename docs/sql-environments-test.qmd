@@ -1,8 +1,6 @@
 ---
 title: "SQL Environment Test"
 format: live-html
-filters:
-  - _extensions/r-wasm/live/live.lua
 ---
 
 ## Environments in interactive SQL blocks
