@@ -10,7 +10,8 @@ import { syntaxHighlighting } from "@codemirror/language";
 import { autocompletion, CompletionContext } from '@codemirror/autocomplete';
 import { python } from "@codemirror/lang-python";
 import { r } from "codemirror-lang-r";
-import { sql } from "@codemirror/lang-sql";
+import { PostgreSQL, sql } from "@codemirror/lang-sql";
+import { getSqlSchema, type SqlSchema } from "./sqlUtils";
 
 export type EditorValue = {
   code: string | null;
@@ -56,47 +57,6 @@ const icons = {
   lightbulb: require('./assets/lightbulb.svg') as string,
   play: require('./assets/play.svg') as string,
 }
-
-const SQL_KEYWORDS = [
-  "SELECT",
-  "SELECT *",
-  "FROM",
-  "WHERE",
-  "INSERT",
-  "INTO",
-  "VALUES",
-  "UPDATE",
-  "DELETE",
-  "CREATE",
-  "TABLE",
-  "DROP",
-  "ALTER",
-  "ADD",
-  "JOIN",
-  "LEFT",
-  "RIGHT",
-  "INNER",
-  "OUTER",
-  "ON",
-  "GROUP BY",
-  "ORDER BY",
-  "HAVING",
-  "LIMIT",
-  "OFFSET",
-  "AS",
-  "DISTINCT",
-  "COUNT",
-  "SUM",
-  "AVG",
-  "MIN",
-  "MAX",
-  "AND",
-  "OR",
-  "NOT",
-  "NULL",
-  "TRUE",
-  "FALSE",
-];
 
 // TODO: This should be made optional, or perhaps a less heavy handed approach.
 function hideEmptyPanels() {
@@ -617,8 +577,36 @@ export class SqlExerciseEditor extends ExerciseEditor {
   defaultCaption: string;
   static preparedCompletionEnvirs = new Set<string>();
 
+  sqlLanguage?: Compartment;
+  sqlSchema: SqlSchema = {};
+
   constructor(code: string, options: ExerciseOptions) {
     super(code, options);
+
+    void this.refreshSchema();
+
+    window.addEventListener(
+      "quarto-live-sql-schema-changed",
+      ((event: CustomEvent) => {
+        const detail = event.detail ?? {};
+        const editorEnvir = this.options.envir || "global";
+
+        const sameExercise =
+          this.options.exercise &&
+          detail.exercise &&
+          this.options.exercise === detail.exercise;
+
+        const sameEnvir =
+          detail.envir &&
+          detail.envir === editorEnvir;
+
+        if (!sameExercise && !sameEnvir) {
+          return;
+        }
+
+        void this.refreshSchema(detail.db);
+      }) as EventListener
+    );
   }
 
   render() {
@@ -627,13 +615,22 @@ export class SqlExerciseEditor extends ExerciseEditor {
   }
 
   languageExtensions() {
-    const language = new Compartment();
     const tabSize = new Compartment();
+
+    if (!this.sqlLanguage) {
+      this.sqlLanguage = new Compartment();
+    }
 
     const extensions = [
       syntaxHighlighting(tagHighlighterTok),
-      autocompletion({ override: [(context) => this.doCompletion(context)] }),
-      language.of(sql()),
+      this.sqlLanguage.of(
+        sql({
+          dialect: PostgreSQL,
+          schema: this.sqlSchema,
+          defaultSchema: "public",
+        })
+      ),
+
       tabSize.of(EditorState.tabSize.of(2)),
       Prec.high(
         keymap.of([
@@ -671,6 +668,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
       if (setup.length > 1) {
         console.warn(`Multiple \`setup\` blocks found for exercise "${exId}", using the first.`);
       }
+
       const block = JSON.parse(atob(setup[0].textContent || ""));
       return block.code;
     }
@@ -679,6 +677,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
   async getCompletionDb(): Promise<any | null> {
     const runtime = (window as any)._exercise_ojs_runtime;
     const SqlEvaluator = runtime?.SqlEvaluator;
+
     if (!SqlEvaluator?.getDb) {
       return null;
     }
@@ -692,6 +691,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
       !SqlExerciseEditor.preparedCompletionEnvirs.has(completionEnvir)
     ) {
       const setup = this.getExerciseSetupCode();
+
       if (setup && setup.trim() !== "") {
         try {
           await db.exec(setup);
@@ -699,75 +699,39 @@ export class SqlExerciseEditor extends ExerciseEditor {
           console.warn("SQL completion setup failed:", error);
         }
       }
+
       SqlExerciseEditor.preparedCompletionEnvirs.add(completionEnvir);
     }
 
     return db;
   }
 
-  async getSchemaSuggestions(): Promise<string[]> {
-    const db = await this.getCompletionDb();
-    if (!db) return [];
+  async refreshSchema(sourceDb?: any): Promise<void> {
+    if (!this.options.completion) {
+      return;
+    }
+
+    const db = sourceDb ?? await this.getCompletionDb();
+    if (!db) {
+      return;
+    }
 
     try {
-      const tableResult = await db.exec(`
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-        ORDER BY table_name
-      `);
-
-      const columnResult = await db.exec(`
-        SELECT column_name
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-        ORDER BY column_name
-      `);
-
-      const tableRows = Array.isArray(tableResult) ? tableResult[0]?.rows ?? [] : [];
-      const columnRows = Array.isArray(columnResult) ? columnResult[0]?.rows ?? [] : [];
-
-      const tables = tableRows
-        .map((row: any) => String(row.table_name))
-        .filter(Boolean);
-
-      const columns = columnRows
-        .map((row: any) => String(row.column_name))
-        .filter(Boolean);
-
-      return [...new Set([...tables, ...columns])];
+      this.sqlSchema = await getSqlSchema(db);
+      if (this.view && this.sqlLanguage) {
+        this.view.dispatch({
+          effects: this.sqlLanguage.reconfigure(
+            sql({
+              dialect: PostgreSQL,
+              schema: this.sqlSchema,
+              defaultSchema: "public",
+            })
+          ),
+        });
+      }
     } catch (error) {
-      console.warn("SQL schema completion failed:", error);
-      return [];
+      console.warn("SQL schema refresh failed:", error);
     }
-  }
-
-  async doCompletion(context: CompletionContext) {
-    if (!this.options.completion) return null;
-
-    const match = context.matchBefore(/[A-Za-z_][A-Za-z0-9_]*/);
-    const from = match ? match.from : context.pos;
-    const text = match ? match.text : "";
-
-    if (!context.explicit && !match) {
-      return null;
-    }
-
-    const schemaSuggestions = await this.getSchemaSuggestions();
-
-    const options = [...new Set([...SQL_KEYWORDS, ...schemaSuggestions])]
-      .filter((label) => {
-        if (!text) return true;
-        return label.toLowerCase().startsWith(text.toLowerCase());
-      })
-      .map((label) => ({
-        label,
-        boost: SQL_KEYWORDS.includes(label) ? 50 : 100,
-      }));
-
-    return {
-      from,
-      options,
-    };
   }
 }
+ 

@@ -175,6 +175,19 @@ export class SqlEvaluator implements ExerciseEvaluator {
     return await this.evaluate(checkCode, "result", this.options, false);
   }
 
+  notifySqlSchemaChanged(db: PGlite, envLabel: string, options: EvaluateOptions) {
+    window.dispatchEvent(
+      new CustomEvent("quarto-live-sql-schema-changed", {
+        detail: {
+          db,
+          envLabel,
+          envir: options.envir ?? "global",
+          exercise: options.exercise ?? null,
+        },
+      })
+    );
+  }
+
   async executeSql(
     code: string,
     db: PGlite,
@@ -216,6 +229,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
           this.lastRunSql = code;
           this.lastRunResult = result;
           this.lastRunError = null;
+          this.notifySqlSchemaChanged
         }
 
         return result;
@@ -236,6 +250,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
         this.lastRunSql = code;
         this.lastRunResult = result;
         this.lastRunError = null;
+        this.notifySqlSchemaChanged(db, envLabel, options);
       }
 
       return result;
