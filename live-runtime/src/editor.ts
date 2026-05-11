@@ -581,7 +581,13 @@ export class SqlExerciseEditor extends ExerciseEditor {
   sqlSchema: SqlSchema = {};
 
   constructor(code: string, options: ExerciseOptions) {
-    super(code, options);
+    const isExercise = Boolean(options.exercise);
+
+    super(code,
+      {... options,
+        autorun: options.autorun ?? isExercise, // Default to autorun for exercises, but allow override
+      }
+    );
 
     void this.refreshSchema();
 
