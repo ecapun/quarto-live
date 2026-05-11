@@ -1,86 +1,279 @@
 ---
 title: "SQL Grading Test"
 format: live-html
-filters:
-  - _extensions/r-wasm/live/live.lua
 ---
 
-## Fall 1 korrekt
+This document tests SQL-specific grading behavior for Quarto Live. The focus is on setup execution, checks after user code, positive and negative grading results, SQL error handling, and shared environments.
+
+## Test 1: Correct solution passes check
+
+This test verifies that setup code creates the initial table, the exercise modifies the database state, and the check evaluates the resulting state.
 
 ```{sql}
+#| exercise: grade_insert_pass
 #| setup: true
-#| exercise: demo1
-CREATE TABLE people (id INTEGER, name TEXT);
-INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+DROP TABLE IF EXISTS numbers_pass;
+CREATE TABLE numbers_pass (
+ value INTEGER
+);
 ```
 
 ```{sql}
-#| exercise: demo1
-SELECT * FROM people;
+#| exercise: grade_insert_pass
+INSERT INTO numbers_pass VALUES (1), (2), (3);
 ```
 
 ```{sql}
+#| exercise: grade_insert_pass
 #| check: true
-#| exercise: demo1
-SELECT COUNT(*) = 2 AS ok FROM people;
+SELECT COUNT(*) = 3 AS passed
+FROM numbers_pass;
 ```
 
-## Fall 2 falsch
+Expected result: The check should pass, because the table contains exactly three rows.
+
+## Test 2: Incorrect solution fails check
+
+This test verifies that an incorrect database state leads to negative grading feedback.
 
 ```{sql}
+#| exercise: grade_insert_fail
 #| setup: true
-#| exercise: demo2
-CREATE TABLE people (id INTEGER, name TEXT);
-INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+DROP TABLE IF EXISTS numbers_fail;
+CREATE TABLE numbers_fail (
+ value INTEGER
+);
 ```
 
 ```{sql}
-#| exercise: demo2
-SELECT * FROM people;
+#| exercise: grade_insert_fail
+INSERT INTO numbers_fail VALUES (1);
 ```
 
 ```{sql}
+#| exercise: grade_insert_fail
 #| check: true
-#| exercise: demo2
-SELECT COUNT(*) = 3 AS ok FROM people;
+SELECT COUNT(*) = 3 AS passed
+FROM numbers_fail;
 ```
 
-## Fall 3 Check-Fehler
+Expected result: The check should fail, because the table contains only one row instead of three.
+
+## Test 5.4: Check validates inserted values
+
+This test verifies that the check can evaluate not only the number of rows, but also the actual data inserted by the exercise.
+
+````{.markdown filename="sql-functional-test.qmd"}
+
+```{{sql}}
+#| exercise: grade_values_pass
+#| check: true
+SELECT
+ COUNT(*) = 3
+ AND SUM(price) = 75
+ AND MAX(price) = 50
+ AS passed
+FROM products;
+````
 
 ```{sql}
+#| exercise: grade_values_pass
 #| setup: true
-#| exercise: demo3
-CREATE TABLE people (id INTEGER, name TEXT);
-INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+DROP TABLE IF EXISTS products;
+CREATE TABLE products (
+ id INTEGER,
+ name TEXT,
+ price INTEGER
+);
 ```
 
 ```{sql}
-#| exercise: demo3
-SELECT * FROM people;
+#| exercise: grade_values_pass
+INSERT INTO products VALUES
+ (1, 'Book', 20),
+ (2, 'Pen', 5),
+ (3, 'Bag', 50);
 ```
 
 ```{sql}
+#| exercise: grade_values_pass
 #| check: true
-#| exercise: demo3
-SELECT * FROM does_not_exist;
+SELECT
+ COUNT(*) = 3
+ AND SUM(price) = 75
+ AND MAX(price) = 50
+ AS passed
+FROM products;
 ```
 
-## Fall 4 String-Feedback
+Expected result: The check should pass, because the expected rows and values were inserted.
+
+## Test 4: SQL error in solution
+
+This test verifies that an error in the learner solution is detected and reported instead of producing uncaught browser errors.
 
 ```{sql}
+#| exercise: grade_error
 #| setup: true
-#| exercise: demo4
-CREATE TABLE people (id INTEGER, name TEXT);
-INSERT INTO people VALUES (1, 'Ada'), (2, 'Linus');
+DROP TABLE IF EXISTS error_test;
+CREATE TABLE error_test (
+ id INTEGER
+);
 ```
 
 ```{sql}
-#| exercise: demo4
-SELECT * FROM people;
+#| exercise: grade_error
+INSERT INTO missing_table VALUES (1);
 ```
 
 ```{sql}
+#| exercise: grade_error
 #| check: true
-#| exercise: demo4
-SELECT 'Not correct yet.' AS ok;
+SELECT COUNT(*) = 1 AS passed
+FROM error_test;
 ```
+
+Expected result: The SQL execution should fail and the error should be shown as feedback.
+
+## Test 5.5: Shared environment grading
+
+This test verifies that checks can evaluate a database state created across multiple exercises in the same shared environment.
+
+```{sql}
+#| exercise: shared_grade_1
+#| envir: grading_shared
+DROP TABLE IF EXISTS shared_numbers;
+CREATE TABLE shared_numbers (
+ value INTEGER
+);
+INSERT INTO shared_numbers VALUES (10);
+```
+
+```{sql}
+#| exercise: shared_grade_2
+#| envir: grading_shared
+INSERT INTO shared_numbers VALUES (20);
+```
+
+```{sql}
+#| exercise: shared_grade_2
+#| envir: grading_shared
+#| check: true
+SELECT COUNT(*) = 2 AS passed
+FROM shared_numbers;
+```
+
+Expected result: The check should pass, because both exercises use the same shared environment and the table contains two rows.
+
+## Test 6: Shared environment negative grading
+
+This test verifies that shared-environment grading also detects an incorrect state.
+
+```{sql}
+#| exercise: shared_grade_fail_1
+#| envir: grading_shared_fail
+DROP TABLE IF EXISTS shared_fail;
+CREATE TABLE shared_fail (
+ value INTEGER
+);
+INSERT INTO shared_fail VALUES (10);
+```
+
+```{sql}
+#| exercise: shared_grade_fail_2
+#| envir: grading_shared_fail
+INSERT INTO shared_fail VALUES (20);
+```
+
+```{sql}
+#| exercise: shared_grade_fail_2
+#| envir: grading_shared_fail
+#| check: true
+SELECT COUNT(*) = 3 AS passed
+FROM shared_fail;
+```
+
+Expected result: The check should fail, because the shared table contains two rows instead of three.
+
+## Test 5.6: Check returns numeric result
+
+This test verifies that numeric check results can be interpreted as grading results. A non-zero value should be interpreted as a successful check.
+
+```{sql}
+#| exercise: grade_numeric_result
+#| setup: true
+DROP TABLE IF EXISTS numeric_test;
+CREATE TABLE numeric_test (
+ value INTEGER
+);
+```
+
+```{sql}
+#| exercise: grade_numeric_result
+INSERT INTO numeric_test VALUES (1), (2);
+```
+
+```{sql}
+#| exercise: grade_numeric_result
+#| check: true
+SELECT COUNT(*) AS passed
+FROM numeric_test;
+```
+
+Expected result: The check should pass, because the first result field is a non-zero numeric value.
+
+## Test 5.7: Check returns text result
+
+This test verifies that textual check results such as `ok` can be interpreted as successful grading results.
+
+```{sql}
+#| exercise: grade_text_result
+#| setup: true
+DROP TABLE IF EXISTS text_test;
+CREATE TABLE text_test (
+ value INTEGER
+);
+```
+
+```{sql}
+#| exercise: grade_text_result
+INSERT INTO text_test VALUES (1);
+```
+
+```{sql}
+#| exercise: grade_text_result
+#| check: true
+SELECT
+ CASE
+   WHEN COUNT(*) = 1 THEN 'ok'
+   ELSE 'fail'
+ END AS passed
+FROM text_test;
+```
+
+Expected result: The check should pass, because the first result field contains `ok`.
+
+## Test 9: Check detects missing table
+
+This test verifies that checks fail when the expected database object was not created by the exercise.
+
+```{sql}
+#| exercise: grade_missing_table
+#| setup: true
+DROP TABLE IF EXISTS required_table;
+```
+
+```{sql}
+#| exercise: grade_missing_table
+-- The learner solution intentionally does not create the required table.
+SELECT 1;
+```
+
+```{sql}
+#| exercise: grade_missing_table
+#| check: true
+SELECT COUNT(*) = 1 AS passed
+FROM required_table;
+```
+
+Expected result: The check should fail with an SQL error, because the expected table does not exist.
