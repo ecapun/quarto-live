@@ -1,0 +1,172 @@
+---
+title: "SQL Environment Test"
+format: live-html
+---
+
+This document tests SQL execution, global environments, isolated exercise environments, shared environments, tabular output, error handling, and schema-aware autocomplete.
+
+## Test 1: Global SQL environment
+
+This test verifies that normal SQL blocks without an explicit exercise use the global environment. A table created in one normal SQL block should be available in a later normal SQL block.
+
+```{sql}
+DROP TABLE IF EXISTS people_global;
+CREATE TABLE people_global (
+ id INTEGER,
+ name TEXT
+);
+INSERT INTO people_global VALUES
+ (1, 'Ada'),
+ (2, 'Linus');
+```
+
+```{sql}
+SELECT *
+FROM people_global;
+```
+
+Expected result: The second SQL block should display the two rows inserted in the first SQL block.
+
+## Test 2: Tabular output
+
+This test verifies that SELECT results are rendered as a table with columns and rows.
+
+```{sql}
+SELECT
+ id,
+ name
+FROM people_global
+ORDER BY id;
+```
+
+Expected result: The output should be displayed as a table with the columns `id` and `name`.
+
+## Test 3: Isolated exercise environment
+
+This test verifies that an exercise without a manually assigned `envir` receives its own exercise-specific database state.
+
+```{sql}
+#| setup: true
+#| exercise: ex_isolated
+DROP TABLE IF EXISTS people_isolated;
+CREATE TABLE people_isolated (
+ id INTEGER,
+ name TEXT
+);
+INSERT INTO people_isolated VALUES
+ (1, 'Ada'),
+ (2, 'Linus');
+```
+
+```{sql}
+#| exercise: ex_isolated
+INSERT INTO people_isolated VALUES (3, 'Emirhan');
+SELECT *
+FROM people_isolated
+ORDER BY id;
+```
+
+```{sql}
+#| check: true
+#| exercise: ex_isolated
+SELECT COUNT(*) = 3 AS passed
+FROM people_isolated;
+```
+
+Expected result: The exercise should show three rows and the check should pass.
+
+## Test 4: Isolation from global environment
+
+This test verifies that the isolated exercise environment does not accidentally use the global table from Test 1.
+
+```{sql}
+#| exercise: ex_isolation_check
+SELECT *
+FROM people_global;
+```
+
+Expected result: This exercise should not rely on the global exercise state. If the table is not available in the isolated environment, an SQL error is expected. This confirms that exercise environments are separated from the global environment.
+
+## Test 5: Shared environment / Follow-on exercise
+
+This test verifies that multiple exercises with the same `envir` value share one database state.
+
+```{sql}
+#| exercise: ex_shared_1
+#| envir: myenv
+DROP TABLE IF EXISTS people_shared;
+CREATE TABLE people_shared (
+ id INTEGER,
+ name TEXT
+);
+INSERT INTO people_shared VALUES (1, 'Ada');
+```
+
+```{sql}
+#| exercise: ex_shared_2
+#| envir: myenv
+INSERT INTO people_shared VALUES (2, 'Linus');
+SELECT *
+FROM people_shared
+ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_shared_3
+#| envir: myenv
+SELECT COUNT(*) AS total_rows
+FROM people_shared;
+```
+
+Expected result: The shared environment should contain the rows inserted by the previous exercises. The last exercise should return `2`.
+
+## Test 6: Shared environment check
+
+This test verifies that a check can evaluate the state of a shared environment.
+
+```{sql}
+#| exercise: ex_shared_3
+#| envir: myenv
+#| check: true
+SELECT COUNT(*) = 2 AS passed
+FROM people_shared;
+```
+
+Expected result: The check should pass because the shared table contains two rows.
+
+## Test 7: SQL error output
+
+This test verifies that SQL errors are shown as output feedback instead of uncaught browser errors.
+
+```{sql}
+SELECT *
+FROM table_that_does_not_exist;
+```
+
+Expected result: The SQL error should be displayed in the output area.
+
+## Test 8: Schema-aware autocomplete
+
+This test verifies that newly created tables and columns can be used for schema-aware autocomplete.
+
+```{sql}
+DROP TABLE IF EXISTS autocomplete_test;
+CREATE TABLE autocomplete_test (
+ id INTEGER,
+ label TEXT,
+ amount INTEGER
+);
+INSERT INTO autocomplete_test VALUES
+ (1, 'first', 10),
+ (2, 'second', 20);
+```
+
+```{sql}
+SELECT
+ id,
+ label,
+ amount
+FROM autocomplete_test;
+```
+
+Expected result: After executing the first block, the editor should suggest the table `autocomplete_test` and its columns `id`, `label`, and `amount` during SQL input.

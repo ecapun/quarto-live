@@ -121,3 +121,35 @@ SELECT
 FROM foo
 JOIN bar ON foo.id = bar.id;
 ```
+
+## Test: Autorun in SQL Exercise
+
+This test verifies that an exercise SQL block with `autorun: true` is executed automatically when the page is initialized.
+
+```{sql}
+#| exercise: ex_autorun
+#| setup: true
+DROP TABLE IF EXISTS autorun_exercise;
+CREATE TABLE autorun_exercise (
+ id INTEGER,
+ value TEXT
+);
+```
+
+```{sql}
+#| exercise: ex_autorun
+#| autorun: true
+INSERT INTO autorun_exercise VALUES
+ (1, 'created by exercise autorun');
+SELECT *
+FROM autorun_exercise;
+```
+
+```{sql}
+#| exercise: ex_autorun
+#| check: true
+SELECT COUNT(*) = 1 AS passed
+FROM autorun_exercise;
+```
+
+Expected result: The exercise block should execute automatically after initialization, display the inserted row, and the check should pass without manually pressing the run button.
