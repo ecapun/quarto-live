@@ -1,0 +1,370 @@
+---
+title: "SQL Functional Tests"
+format: live-html
+---
+
+## SQL Functional Tests
+
+This document contains functional tests for the SQL extension. The tests correspond to the feature matrix and cover client-side execution, static delivery, normal SQL blocks, isolated exercises, shared environments, setup and grading, error feedback, editor behavior, schema-aware autocomplete, and autorun.
+
+## Test 1: Client-side SQL execution and static delivery
+
+This test verifies that SQL statements can be executed in the browser through PGlite. The rendered HTML page is intended to be opened through a static local web server without an external SQL server.
+
+#### Source
+
+````{.markdown filename="sql-functional-test.qmd"}
+
+```{{sql}}
+DROP TABLE IF EXISTS functional_people;
+CREATE TABLE functional_people (
+ id INTEGER,
+ name TEXT
+);
+INSERT INTO functional_people VALUES
+ (1, 'Ada'),
+ (2, 'Linus');
+````
+
+```{sql}
+DROP TABLE IF EXISTS functional_people;
+CREATE TABLE functional_people (
+ id INTEGER,
+ name TEXT
+);
+INSERT INTO functional_people VALUES
+ (1, 'Ada'),
+ (2, 'Linus');
+```
+
+#### Source
+
+````{.markdown filename="sql-functional-test.qmd"}
+
+```{{sql}}
+SELECT *
+FROM functional_people
+ORDER BY id;
+````
+
+```{sql}
+SELECT *
+FROM functional_people
+ORDER BY id;
+```
+
+Expected result: The second block displays two rows. The page can be rendered and executed through a static local web server without a Node, Quarto preview, or external SQL database server.
+
+## Test 2: Normal SQL blocks, global state, tabular output, and before-all behavior
+
+This test verifies that normal SQL blocks share a global database state. A table created in one normal SQL block should be available in later normal SQL blocks. This also demonstrates that a normal SQL block can function as a document-wide preparation step comparable to a limited before-all mechanism.
+
+```{sql}
+DROP TABLE IF EXISTS global_numbers;
+CREATE TABLE global_numbers (
+ id INTEGER,
+ value INTEGER
+);
+INSERT INTO global_numbers VALUES
+ (1, 10),
+ (2, 20);
+```
+
+```{sql}
+INSERT INTO global_numbers VALUES
+ (3, 30);
+```
+
+```{sql}
+SELECT
+ id,
+ value
+FROM global_numbers
+ORDER BY id;
+```
+
+Expected result: The final SELECT output is displayed as a table with the columns `id` and `value` and contains three rows.
+
+## Test 3: Isolated exercises
+
+This test verifies that SQL exercises without a shared `envir` use separate database states. Two exercises use the same table name but should not interfere with each other.
+
+```{sql}
+#| exercise: isolated_one
+#| setup: true
+DROP TABLE IF EXISTS isolated_items;
+CREATE TABLE isolated_items (
+ id INTEGER,
+ label TEXT
+);
+INSERT INTO isolated_items VALUES
+ (1, 'first exercise setup');
+```
+
+```{sql}
+#| exercise: isolated_one
+INSERT INTO isolated_items VALUES
+ (2, 'first exercise user row');
+SELECT *
+FROM isolated_items
+ORDER BY id;
+```
+
+```{sql}
+#| exercise: isolated_one
+#| check: true
+SELECT COUNT(*) = 2 AS passed
+FROM isolated_items;
+```
+
+```{sql}
+#| exercise: isolated_two
+#| setup: true
+DROP TABLE IF EXISTS isolated_items;
+CREATE TABLE isolated_items (
+ id INTEGER,
+ label TEXT
+);
+INSERT INTO isolated_items VALUES
+ (1, 'second exercise setup');
+```
+
+```{sql}
+#| exercise: isolated_two
+SELECT *
+FROM isolated_items
+ORDER BY id;
+```
+
+```{sql}
+#| exercise: isolated_two
+#| check: true
+SELECT COUNT(*) = 1 AS passed
+FROM isolated_items;
+```
+
+Expected result: The first exercise contains two rows after execution. The second exercise contains only its own setup row. This shows that the exercises do not accidentally share the same database state.
+
+## Test 4: Shared environments
+
+This test verifies that multiple exercises with the same `envir` option share one database state. The first exercise creates the table, and later exercises use and extend the same state.
+
+```{sql}
+#| exercise: shared_one
+#| envir: shared_functional
+DROP TABLE IF EXISTS shared_items;
+CREATE TABLE shared_items (
+ id INTEGER,
+ label TEXT
+);
+INSERT INTO shared_items VALUES
+ (1, 'created in first shared exercise');
+```
+
+```{sql}
+#| exercise: shared_two
+#| envir: shared_functional
+INSERT INTO shared_items VALUES
+ (2, 'created in second shared exercise');
+SELECT *
+FROM shared_items
+ORDER BY id;
+```
+
+```{sql}
+#| exercise: shared_three
+#| envir: shared_functional
+SELECT COUNT(*) AS total_rows
+FROM shared_items;
+```
+
+```{sql}
+#| exercise: shared_three
+#| envir: shared_functional
+#| check: true
+SELECT COUNT(*) = 2 AS passed
+FROM shared_items;
+```
+
+Expected result: The shared environment contains both inserted rows. The check for `shared_three` passes because all exercises use the same `envir`.
+
+## Test 5: Setup, grading, and error feedback
+
+This test verifies that setup code prepares the exercise state, that check code evaluates the result, and that SQL errors are shown as feedback.
+
+### Test 5.1: Correct grading result
+
+```{sql}
+#| exercise: grading_pass
+#| setup: true
+DROP TABLE IF EXISTS grading_numbers;
+CREATE TABLE grading_numbers (
+ value INTEGER
+);
+```
+
+```{sql}
+#| exercise: grading_pass
+INSERT INTO grading_numbers VALUES
+ (1),
+ (2),
+ (3);
+```
+```{sql}
+#| exercise: grading_pass
+#| check: true
+SELECT COUNT(*) = 3 AS passed
+FROM grading_numbers;
+```
+
+Expected result: The check passes because the table contains exactly three rows.
+
+### Test 5.2: Negative grading result
+
+```{sql}
+#| exercise: grading_fail
+#| setup: true
+DROP TABLE IF EXISTS grading_fail_numbers;
+CREATE TABLE grading_fail_numbers (
+ value INTEGER
+);
+```
+
+```{sql}
+#| exercise: grading_fail
+INSERT INTO grading_fail_numbers VALUES
+ (1);
+```
+
+```{sql}
+#| exercise: grading_fail
+#| check: true
+SELECT COUNT(*) = 3 AS passed
+FROM grading_fail_numbers;
+```
+
+Expected result: The check fails because the table contains only one row instead of three.
+
+### Test 5.3: SQL error feedback
+
+```{sql}
+#| exercise: grading_error
+#| setup: true
+DROP TABLE IF EXISTS grading_error_table;
+CREATE TABLE grading_error_table (
+ id INTEGER
+);
+```
+
+```{sql}
+#| exercise: grading_error
+INSERT INTO table_that_does_not_exist VALUES (1);
+```
+
+```{sql}
+#| exercise: grading_error
+#| check: true
+SELECT COUNT(*) = 1 AS passed
+FROM grading_error_table;
+```
+
+Expected result: The SQL error is displayed as feedback and does not produce an uncaught browser error.
+
+## Test 6: SQL editor, schema-aware autocomplete, and autorun
+
+This test verifies editor-based SQL input, schema-aware autocomplete, and the Quarto Live editor option `autorun`.
+
+### Test 6.1: Schema-aware autocomplete
+
+This test verifies that the SQL editor can suggest table and column names from the current PGlite schema.
+
+````{.markdown filename="sql-functional-test.qmd"}
+
+```{{sql}}
+#| exercise: editor_autocomplete
+#| setup: true
+DROP TABLE IF EXISTS autocomplete_items;
+CREATE TABLE autocomplete_items (
+ id INTEGER,
+ label TEXT,
+ amount INTEGER
+);
+INSERT INTO autocomplete_items VALUES
+ (1, 'first', 10),
+ (2, 'second', 20);
+````
+
+```{sql}
+#| exercise: editor_autocomplete
+#| setup: true
+DROP TABLE IF EXISTS autocomplete_items;
+CREATE TABLE autocomplete_items (
+ id INTEGER,
+ label TEXT,
+ amount INTEGER
+);
+INSERT INTO autocomplete_items VALUES
+ (1, 'first', 10),
+ (2, 'second', 20);
+```
+
+```{sql}
+#| exercise: editor_autocomplete
+SELECT
+ id,
+ label,
+ amount
+FROM autocomplete_items
+ORDER BY id;
+```
+
+```{sql}
+#| exercise: editor_autocomplete
+#| check: true
+SELECT COUNT(*) = 2 AS passed
+FROM autocomplete_items;
+```
+Expected result: The SQL editor should suggest the table `autocomplete_items` and the columns `id`, `label`, and `amount`. The query should return two rows and the check should pass.
+
+### Test 6.2: Autorun in SQL editor
+
+This test verifies that a bearbeitbarer SQL block with `autorun: true` is executed automatically when the editor is initialized.
+
+````{.markdown filename="sql-functional-test.qmd"}
+
+```{{sql}}
+#| exercise: editor_autorun
+#| autorun: true
+INSERT INTO autorun_editor VALUES
+ (1, 'created by editor autorun');
+SELECT *
+FROM autorun_editor;
+````
+
+```{sql}
+#| exercise: editor_autorun
+#| setup: true
+DROP TABLE IF EXISTS autorun_editor;
+CREATE TABLE autorun_editor (
+ id INTEGER,
+ value TEXT
+);
+```
+
+```{sql}
+#| exercise: editor_autorun
+#| autorun: true
+INSERT INTO autorun_editor VALUES
+ (1, 'created by editor autorun');
+SELECT *
+FROM autorun_editor;
+```
+
+```{sql}
+#| exercise: editor_autorun
+#| check: true
+SELECT COUNT(*) = 1 AS passed
+FROM autorun_editor;
+```
+
+Expected result: The SQL block with `autorun: true` is executed automatically without pressing the run button. The output displays the inserted row and the check passes.
