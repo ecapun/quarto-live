@@ -15,7 +15,7 @@ This test verifies that SQL statements can be executed in the browser through PG
 
 ````{.markdown filename="sql-functional-test.qmd"}
 
-```{{sql}}
+```{sql}
 DROP TABLE IF EXISTS functional_people;
 CREATE TABLE functional_people (
  id INTEGER,
@@ -27,6 +27,7 @@ INSERT INTO functional_people VALUES
 ````
 
 ```{sql}
+#| edit: true 
 DROP TABLE IF EXISTS functional_people;
 CREATE TABLE functional_people (
  id INTEGER,
@@ -41,7 +42,7 @@ INSERT INTO functional_people VALUES
 
 ````{.markdown filename="sql-functional-test.qmd"}
 
-```{{sql}}
+```{sql}
 SELECT *
 FROM functional_people
 ORDER BY id;
