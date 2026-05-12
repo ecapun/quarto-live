@@ -1,0 +1,28 @@
+viewof _sql_editor_{{block_id}} = {
+ const { SqlExerciseEditor, b64Decode } = window._exercise_ojs_runtime;
+ const scriptContent = document.querySelector(`script[type="sql-{{block_id}}-contents"]`).textContent;
+ const block = JSON.parse(b64Decode(scriptContent));
+ const options = Object.assign(
+   {
+     id: "sql-{{block_id}}-contents",
+     envir: "global",
+     error: false,
+     caption: "SQL Code",
+     completion: true,
+   },
+   block.attr
+ );
+ const editor = new SqlExerciseEditor(block.code, options);
+ return editor.container;
+}
+viewof _sql_value_{{block_id}} = {
+ const { SqlEvaluator } = window._exercise_ojs_runtime;
+ const context = {
+   code: _sql_editor_{{block_id}}.code,
+   options: _sql_editor_{{block_id}}.options,
+   indicator: _sql_editor_{{block_id}}.indicator,
+ };
+ const evaluator = new SqlEvaluator(context);
+ await evaluator.process({});
+ return evaluator.container;
+}

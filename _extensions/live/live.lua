@@ -445,9 +445,14 @@ function SqlCodeBlock(code)
   -- Render appropriate OJS depending on block type
   local ojs_source = nil
   if (block.attr.exercise) then
+    -- Primary interactive exercise block
     assertUniqueExercise(block.attr.exercise)
     ojs_source = "sql-exercise.ojs"
+  elseif (block.attr.edit) then
+    -- Editable non-exercise sandbox block
+    ojs_source = "sql-editor.ojs"
   else
+    -- Non-interactive evaluation block
     ojs_source = "sql-evaluate.ojs"
   end
 
