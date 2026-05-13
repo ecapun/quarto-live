@@ -12,6 +12,7 @@ import { python } from "@codemirror/lang-python";
 import { r } from "codemirror-lang-r";
 import { PostgreSQL, sql } from "@codemirror/lang-sql";
 import { getSqlSchema, type SqlSchema } from "./sqlUtils";
+import { SQL_META_COMMANDS } from './sql-meta-commands';
 
 export type EditorValue = {
   code: string | null;
@@ -573,6 +574,28 @@ export class PyodideExerciseEditor extends ExerciseEditor {
   }
 }
 
+function sqlMetaCommandCompletion(context: CompletionContext) {
+  const word = context.matchBefore(/\\[a-zA-Z?]*/);
+
+  if (!word) {
+    return null;
+  }
+
+  if (word.from === word.to && !context.explicit) {
+    return null;
+  }
+  
+  return {
+    from: word.from,
+    options: SQL_META_COMMANDS.map(({ command, detail }) => ({
+      label: command,
+      apply: command,
+      type: "keyword",
+      detail,
+    })),
+  };
+}
+
 export class SqlExerciseEditor extends ExerciseEditor {
   defaultCaption: string;
   static preparedCompletionEnvirs = new Set<string>();
@@ -615,6 +638,20 @@ export class SqlExerciseEditor extends ExerciseEditor {
     return super.render();
   }
 
+  private sqlSupportExtensions() {
+    const support = sql({
+      dialect: PostgreSQL,
+      schema: this.sqlSchema,
+      defaultSchema: "public",
+    });
+    return [
+      support,
+      support.language.data.of({
+        autocomplete: sqlMetaCommandCompletion,
+      }),
+    ];
+  }
+
   languageExtensions() {
     const tabSize = new Compartment();
 
@@ -624,13 +661,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
 
     const extensions = [
       syntaxHighlighting(tagHighlighterTok),
-      this.sqlLanguage.of(
-        sql({
-          dialect: PostgreSQL,
-          schema: this.sqlSchema,
-          defaultSchema: "public",
-        })
-      ),
+      this.sqlLanguage.of(this.sqlSupportExtensions()),
 
       tabSize.of(EditorState.tabSize.of(2)),
       Prec.high(
@@ -722,11 +753,7 @@ export class SqlExerciseEditor extends ExerciseEditor {
       if (this.view && this.sqlLanguage) {
         this.view.dispatch({
           effects: this.sqlLanguage.reconfigure(
-            sql({
-              dialect: PostgreSQL,
-              schema: this.sqlSchema,
-              defaultSchema: "public",
-            })
+            this.sqlSupportExtensions()
           ),
         });
       }
@@ -735,4 +762,3 @@ export class SqlExerciseEditor extends ExerciseEditor {
     }
   }
 }
- 

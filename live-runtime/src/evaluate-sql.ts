@@ -1,4 +1,4 @@
-import { PGlite } from "@electric-sql/pglite";
+﻿import { PGlite } from "@electric-sql/pglite";
 import { Indicator } from "./indicator";
 import { EnvironmentManager, EnvLabel, SqlEnvironment } from "./environment";
 import {
@@ -9,6 +9,7 @@ import {
   OJSEvaluateElement,
 } from "./evaluate";
 import { b64Decode } from "./utils";
+import { executeSqlMetaCommand, isSqlMetaCommand } from "./sql-meta-commands";
 
 type SqlEvaluateResult = {
   engine: "sql";
@@ -198,6 +199,25 @@ export class SqlEvaluator implements ExerciseEvaluator {
     void options;
 
     try {
+      if (isSqlMetaCommand(code)) {
+        const output = await executeSqlMetaCommand(code, db);
+
+        const result: SqlEvaluateResult = {
+          engine: "sql",
+          code,
+          envir: envLabel,
+          success: true,
+          output,
+        };
+
+        if (trackRun) {
+          this.lastRunSql = code;
+          this.lastRunResult = result;
+          this.lastRunError = null;
+        }
+        return result;
+      }
+
       const rawResult = await db.exec(code);
 
       const results = Array.isArray(rawResult) ? rawResult : [rawResult];
@@ -229,7 +249,7 @@ export class SqlEvaluator implements ExerciseEvaluator {
           this.lastRunSql = code;
           this.lastRunResult = result;
           this.lastRunError = null;
-          this.notifySqlSchemaChanged
+          this.notifySqlSchemaChanged(db, envLabel, options);
         }
 
         return result;
