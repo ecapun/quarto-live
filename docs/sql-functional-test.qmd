@@ -5,7 +5,9 @@ format: live-html
 
 ## SQL Functional Tests
 
-This document contains functional tests for the SQL extension. The tests correspond to the feature matrix and cover client-side execution, static delivery, normal SQL blocks, isolated exercises, shared environments, setup and grading, error feedback, editor behavior, schema-aware autocomplete, and autorun.
+This document contains functional tests for the SQL extension. The tests correspond to the feature matrix and cover client-side execution, static delivery, normal SQL blocks, editor options, isolated exercises, shared environments, setup and grading, error feedback, schema-aware autocomplete, psql-style meta commands, meta-command autocomplete, and autorun.
+
+The tests are intended to be executed in the rendered HTML document. Unless stated otherwise, editable SQL blocks should be executed manually with **Run Code**.
 
 ## Test 1: Client-side SQL execution and static delivery
 
@@ -14,38 +16,46 @@ This test verifies that SQL statements can be executed in the browser through PG
 #### Source
 
 ````{.markdown filename="sql-functional-test.qmd"}
-
 ```{sql}
 DROP TABLE IF EXISTS functional_people;
+
 CREATE TABLE functional_people (
- id INTEGER,
- name TEXT
+  id INTEGER,
+  name TEXT
 );
+
 INSERT INTO functional_people VALUES
- (1, 'Ada'),
- (2, 'Linus');
+  (1, 'Ada'),
+  (2, 'Linus');
+```
+
 ````
 
 ```{sql}
-#| edit: true 
+#| edit: true
 DROP TABLE IF EXISTS functional_people;
+
 CREATE TABLE functional_people (
- id INTEGER,
- name TEXT
+  id INTEGER,
+  name TEXT
+
 );
+
 INSERT INTO functional_people VALUES
- (1, 'Ada'),
- (2, 'Linus');
+  (1, 'Ada'),
+  (2, 'Linus');
 ```
 
 #### Source
 
 ````{.markdown filename="sql-functional-test.qmd"}
-
 ```{sql}
+
 SELECT *
 FROM functional_people
 ORDER BY id;
+```
+
 ````
 
 ```{sql}
@@ -54,37 +64,38 @@ FROM functional_people
 ORDER BY id;
 ```
 
-Expected result: The second block displays two rows. The page can be rendered and executed through a static local web server without a Node, Quarto preview, or external SQL database server.
+Expected result: After running the blocks in order, the second block displays two rows. The page can be rendered and executed through a static local web server without a Node, Quarto preview, or external SQL database server.
 
 ## Test 2: Normal SQL blocks, global state, tabular output, and before-all behavior
 
-This test verifies that normal SQL blocks share a global database state. A table created in one normal SQL block should be available in later normal SQL blocks. This also demonstrates that a normal SQL block can function as a document-wide preparation step comparable to a limited before-all mechanism.
+This test verifies that normal SQL blocks share a global database state. A table created in one normal SQL block should be available in later normal SQL blocks. This also demonstrates that a normal SQL block can function as a document-wide preparation step comparable to a limited before-all mechanism when executed before later blocks.
 
 ```{sql}
 DROP TABLE IF EXISTS global_numbers;
+
 CREATE TABLE global_numbers (
- id INTEGER,
- value INTEGER
+  id INTEGER,
+  value INTEGER
 );
+
 INSERT INTO global_numbers VALUES
- (1, 10),
- (2, 20);
+  (1, 10),
+  (2, 20);
 ```
 
 ```{sql}
-INSERT INTO global_numbers VALUES
- (3, 30);
+INSERT INTO global_numbers VALUES (3, 30);
 ```
 
 ```{sql}
 SELECT
- id,
- value
+  id,
+  value
 FROM global_numbers
 ORDER BY id;
 ```
 
-Expected result: The final SELECT output is displayed as a table with the columns `id` and `value` and contains three rows.
+Expected result: After running the blocks in order, the final SELECT output is displayed as a table with the columns `id` and `value` and contains three rows.
 
 ## Test 3: Isolated exercises
 
@@ -93,19 +104,24 @@ This test verifies that SQL exercises without a shared `envir` use separate data
 ```{sql}
 #| exercise: isolated_one
 #| setup: true
+
 DROP TABLE IF EXISTS isolated_items;
+
 CREATE TABLE isolated_items (
- id INTEGER,
- label TEXT
+  id INTEGER,
+  label TEXT
 );
+
 INSERT INTO isolated_items VALUES
- (1, 'first exercise setup');
+  (1, 'first exercise setup');
 ```
 
 ```{sql}
 #| exercise: isolated_one
+
 INSERT INTO isolated_items VALUES
- (2, 'first exercise user row');
+  (2, 'first exercise user row');
+
 SELECT *
 FROM isolated_items
 ORDER BY id;
@@ -114,6 +130,7 @@ ORDER BY id;
 ```{sql}
 #| exercise: isolated_one
 #| check: true
+
 SELECT COUNT(*) = 2 AS passed
 FROM isolated_items;
 ```
@@ -121,17 +138,20 @@ FROM isolated_items;
 ```{sql}
 #| exercise: isolated_two
 #| setup: true
+
 DROP TABLE IF EXISTS isolated_items;
+
 CREATE TABLE isolated_items (
- id INTEGER,
- label TEXT
+  id INTEGER,
+  label TEXT
 );
 INSERT INTO isolated_items VALUES
- (1, 'second exercise setup');
+  (1, 'second exercise setup');
 ```
 
 ```{sql}
 #| exercise: isolated_two
+
 SELECT *
 FROM isolated_items
 ORDER BY id;
@@ -140,6 +160,7 @@ ORDER BY id;
 ```{sql}
 #| exercise: isolated_two
 #| check: true
+
 SELECT COUNT(*) = 1 AS passed
 FROM isolated_items;
 ```
@@ -153,20 +174,25 @@ This test verifies that multiple exercises with the same `envir` option share on
 ```{sql}
 #| exercise: shared_one
 #| envir: shared_functional
+
 DROP TABLE IF EXISTS shared_items;
+
 CREATE TABLE shared_items (
- id INTEGER,
- label TEXT
+  id INTEGER,
+  label TEXT
 );
+
 INSERT INTO shared_items VALUES
- (1, 'created in first shared exercise');
+  (1, 'created in first shared exercise');
 ```
 
 ```{sql}
 #| exercise: shared_two
 #| envir: shared_functional
+
 INSERT INTO shared_items VALUES
- (2, 'created in second shared exercise');
+  (2, 'created in second shared exercise');
+
 SELECT *
 FROM shared_items
 ORDER BY id;
@@ -175,6 +201,7 @@ ORDER BY id;
 ```{sql}
 #| exercise: shared_three
 #| envir: shared_functional
+
 SELECT COUNT(*) AS total_rows
 FROM shared_items;
 ```
@@ -183,11 +210,12 @@ FROM shared_items;
 #| exercise: shared_three
 #| envir: shared_functional
 #| check: true
+
 SELECT COUNT(*) = 2 AS passed
 FROM shared_items;
 ```
 
-Expected result: The shared environment contains both inserted rows. The check for `shared_three` passes because all exercises use the same `envir`.
+Expected result: After running the shared exercises in order, the shared environment contains both inserted rows. The check for `shared_three` passes because all exercises use the same `envir`.
 
 ## Test 5: Setup, grading, and error feedback
 
@@ -198,22 +226,25 @@ This test verifies that setup code prepares the exercise state, that check code 
 ```{sql}
 #| exercise: grading_pass
 #| setup: true
+
 DROP TABLE IF EXISTS grading_numbers;
+
 CREATE TABLE grading_numbers (
- value INTEGER
+  value INTEGER
 );
 ```
 
 ```{sql}
 #| exercise: grading_pass
+
 INSERT INTO grading_numbers VALUES
- (1),
- (2),
- (3);
+  (1),(2),(3);
 ```
+
 ```{sql}
 #| exercise: grading_pass
 #| check: true
+
 SELECT COUNT(*) = 3 AS passed
 FROM grading_numbers;
 ```
@@ -225,21 +256,25 @@ Expected result: The check passes because the table contains exactly three rows.
 ```{sql}
 #| exercise: grading_fail
 #| setup: true
+
 DROP TABLE IF EXISTS grading_fail_numbers;
+
 CREATE TABLE grading_fail_numbers (
- value INTEGER
+  value INTEGER
 );
 ```
 
 ```{sql}
 #| exercise: grading_fail
+
 INSERT INTO grading_fail_numbers VALUES
- (1);
+  (1);
 ```
 
 ```{sql}
 #| exercise: grading_fail
 #| check: true
+
 SELECT COUNT(*) = 3 AS passed
 FROM grading_fail_numbers;
 ```
@@ -251,20 +286,24 @@ Expected result: The check fails because the table contains only one row instead
 ```{sql}
 #| exercise: grading_error
 #| setup: true
+
 DROP TABLE IF EXISTS grading_error_table;
+
 CREATE TABLE grading_error_table (
- id INTEGER
+  id INTEGER
 );
 ```
 
 ```{sql}
 #| exercise: grading_error
+
 INSERT INTO table_that_does_not_exist VALUES (1);
 ```
 
 ```{sql}
 #| exercise: grading_error
 #| check: true
+
 SELECT COUNT(*) = 1 AS passed
 FROM grading_error_table;
 ```
@@ -279,42 +318,52 @@ This test verifies editor-based SQL input, schema-aware autocomplete, and the Qu
 
 This test verifies that the SQL editor can suggest table and column names from the current PGlite schema.
 
-````{.markdown filename="sql-functional-test.qmd"}
+#### Source
 
-```{{sql}}
+````{.markdown filename="sql-functional-test.qmd"}
+```{sql}
 #| exercise: editor_autocomplete
 #| setup: true
+
 DROP TABLE IF EXISTS autocomplete_items;
+
 CREATE TABLE autocomplete_items (
- id INTEGER,
- label TEXT,
- amount INTEGER
+  id INTEGER,
+  label TEXT,
+  amount INTEGER
 );
+
 INSERT INTO autocomplete_items VALUES
- (1, 'first', 10),
- (2, 'second', 20);
+  (1, 'first', 10),
+  (2, 'second', 20);
+```
+
 ````
 
 ```{sql}
 #| exercise: editor_autocomplete
 #| setup: true
+
 DROP TABLE IF EXISTS autocomplete_items;
+
 CREATE TABLE autocomplete_items (
- id INTEGER,
- label TEXT,
- amount INTEGER
+  id INTEGER,
+  label TEXT,
+  amount INTEGER
 );
+
 INSERT INTO autocomplete_items VALUES
- (1, 'first', 10),
- (2, 'second', 20);
+  (1, 'first', 10),
+  (2, 'second', 20);
 ```
 
 ```{sql}
 #| exercise: editor_autocomplete
+
 SELECT
- id,
- label,
- amount
+  id,
+  label,
+  amount
 FROM autocomplete_items
 ORDER BY id;
 ```
@@ -322,41 +371,52 @@ ORDER BY id;
 ```{sql}
 #| exercise: editor_autocomplete
 #| check: true
+
 SELECT COUNT(*) = 2 AS passed
 FROM autocomplete_items;
 ```
+
 Expected result: The SQL editor should suggest the table `autocomplete_items` and the columns `id`, `label`, and `amount`. The query should return two rows and the check should pass.
 
 ### Test 6.2: Autorun in SQL editor
 
-This test verifies that a bearbeitbarer SQL block with `autorun: true` is executed automatically when the editor is initialized.
+This test verifies that an editable SQL block with `autorun: true` is executed automatically when the editor is initialized.
+
+#### Source
 
 ````{.markdown filename="sql-functional-test.qmd"}
-
-```{{sql}}
+```{sql}
 #| exercise: editor_autorun
 #| autorun: true
+
 INSERT INTO autorun_editor VALUES
- (1, 'created by editor autorun');
+  (1, 'created by editor autorun');
+
 SELECT *
 FROM autorun_editor;
+```
+
 ````
 
 ```{sql}
 #| exercise: editor_autorun
 #| setup: true
+
 DROP TABLE IF EXISTS autorun_editor;
+
 CREATE TABLE autorun_editor (
- id INTEGER,
- value TEXT
+  id INTEGER,
+  value TEXT
 );
 ```
 
 ```{sql}
 #| exercise: editor_autorun
 #| autorun: true
+
 INSERT INTO autorun_editor VALUES
- (1, 'created by editor autorun');
+  (1, 'created by editor autorun');
+
 SELECT *
 FROM autorun_editor;
 ```
@@ -364,8 +424,163 @@ FROM autorun_editor;
 ```{sql}
 #| exercise: editor_autorun
 #| check: true
+
 SELECT COUNT(*) = 1 AS passed
 FROM autorun_editor;
 ```
 
 Expected result: The SQL block with `autorun: true` is executed automatically without pressing the run button. The output displays the inserted row and the check passes.
+
+## Test 7: Editor option combinations
+
+This test verifies the interaction between `edit` and `autorun`. The options affect different aspects of execution: `edit` controls whether an editor is shown, while `autorun` controls whether an editable block is executed automatically during initialization.
+
+### Test 7.1: `edit: true`, `autorun: false`
+
+This test verifies the default interactive editor behavior. The editor should be visible, but the SQL code should not be executed until **Run Code** is pressed.
+
+```{sql}
+#| edit: true
+#| autorun: false
+
+SELECT 'manual editor execution' AS mode;
+```
+
+Expected result: An editor is displayed. No result should be shown until **Run Code** is pressed. After execution, the output contains the value `manual editor execution`.
+
+### Test 7.2: `edit: true`, `autorun: true`
+
+This test verifies automatic execution of an editable non-exercise SQL block.
+
+```{sql}
+#| edit: true
+#| autorun: true
+
+SELECT 'automatic editor execution' AS mode;
+```
+
+Expected result: An editor is displayed and the SQL code is executed automatically during initialization. The output contains the value `automatic editor execution` without pressing **Run Code**.
+
+### Test 7.3: `edit: false`, `autorun: false`
+
+This test verifies non-editable SQL block behavior. Since the block is not editable, no editor should be shown. The block should be evaluated directly.
+
+```{sql}
+#| edit: false
+#| autorun: false
+
+SELECT 'direct evaluation without editor' AS mode;
+```
+
+Expected result: No editor is displayed. The output is shown directly and contains the value `direct evaluation without editor`.
+
+### Test 7.4: `edit: false`, `autorun: true`
+
+This test verifies that `edit: false` selects the non-interactive evaluation path. In this case, `autorun` is not the relevant trigger because no editor is created.
+
+```{sql}
+#| edit: false
+#| autorun: true
+
+SELECT 'direct evaluation ignores editor autorun' AS mode;
+```
+
+Expected result: No editor is displayed. The block is evaluated directly. The result contains the value `direct evaluation ignores editor autorun`.
+
+## Test 8: Psql-style meta commands
+
+This test verifies that psql-style meta commands are recognized by the SQL evaluator and executed through the current PGlite environment.
+
+```{sql}
+DROP TABLE IF EXISTS students;
+
+CREATE TABLE students (
+  id INTEGER,
+  name TEXT
+);
+
+INSERT INTO students VALUES
+  (1, 'Ada'),
+  (2, 'Linus');
+```
+
+```{sql}
+\?
+```
+
+```{sql}
+\dt
+```
+
+```{sql}
+\d students
+```
+
+```{sql}
+\du
+```
+
+Expected result: The command `\?` displays help output. The command `\dt` lists the table `students`. The command `\d students` displays information about the columns of the table. The command `\du` is recognized as a supported meta command and returns the role information available in the current PGlite environment.
+
+## Test 9: Meta commands and environments
+
+This test verifies that meta commands use the same environment as regular SQL statements.
+
+```{sql}
+#| exercise: meta_env_create
+#| envir: meta_shared
+
+DROP TABLE IF EXISTS meta_students;
+CREATE TABLE meta_students (
+  id INTEGER,
+  name TEXT
+);
+
+INSERT INTO meta_students VALUES
+  (1, 'Ada');
+```
+
+```{sql}
+#| exercise: meta_env_describe
+#| envir: meta_shared
+
+\d meta_students
+```
+
+```{sql}
+#| exercise: meta_env_missing
+
+\d meta_students
+```
+
+Expected result: The block with `envir: meta_shared` can describe the table `meta_students`, because the table was created in the same shared environment. The block without the shared `envir` does not see that table, because it uses a different exercise environment.
+
+## Test 10: Meta-command autocomplete
+
+This test verifies that the SQL editor suggests supported psql-style meta commands.
+
+```{sql}
+#| exercise: meta_command_completion
+-- Type a backslash or "\d" in the editor and check whether meta commands
+-- such as \?, \d, \dt, \du, \dg, \dn, \dv, \di, and \ds are suggested.
+-- Delete these comments before execution
+
+\dt
+```
+
+Expected result: When typing `\` or `\d` in the SQL editor, the editor suggests supported meta commands such as `\dt`, `\du`, and `\d`. Executing `\dt` runs the meta command through the SQL evaluator.
+
+## Test 11: Meta commands as standalone input
+
+This test documents the expected boundary of psql-style meta commands. Meta commands are treated as standalone inputs and should not be mixed with SQL statements in the same block.
+
+```{sql}
+#| edit: true
+-- Execute this block as a normal SQL block.
+-- Then execute meta commands such as \dt in a separate block.
+-- Delete these comments before execution
+
+SELECT 'meta commands should be executed separately' AS note;
+```
+
+Expected result: Regular SQL executes normally. Meta commands such as `\dt` should be used as separate editor input, not mixed with SQL statements in the same block.
