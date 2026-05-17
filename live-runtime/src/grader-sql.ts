@@ -6,6 +6,20 @@ type SqlFeedback = {
   type?: "success" | "info" | "warning" | "error";
 };
 
+function sqlTextLiteral(value: string): string {
+  return `'${value.replace(/'/g, "''")}'`;
+}
+function buildSqlCheckContext(userCode: string): string {
+  return `
+    DROP TABLE IF EXISTS __quarto_check_context;
+    CREATE TEMP TABLE __quarto_check_context (
+      user_code TEXT
+    );
+    INSERT INTO __quarto_check_context (user_code)
+    VALUES (${sqlTextLiteral(userCode)});
+  `;
+}
+
 export class SqlGrader extends ExerciseGrader {
   constructor(evaluator: any) {
     super(evaluator);
@@ -40,7 +54,10 @@ export class SqlGrader extends ExerciseGrader {
   }
 
   async evaluateCheck(checkCode: string): Promise<SqlFeedback | null> {
-    const result = await this.evaluator.executeCheck(checkCode);
+    const userCode = this.evaluator.lastRunSQL ?? this.context.code ?? "";
+    const chekckCodeWithContext = `${buildSqlCheckContext(userCode)}\n${checkCode}`;
+    
+    const result = await this.evaluator.executeCheck(chekckCodeWithContext);
 
     if (!result) {
       return {

@@ -277,3 +277,39 @@ FROM required_table;
 ```
 
 Expected result: The check should fail with an SQL error, because the expected table does not exist.
+
+## Test 10: User-code check context
+
+This test verifies that the SQL check can inspect the submitted user code through the internal check context.
+
+```{sql}
+#| exercise: user_code_context
+#| setup: true
+DROP TABLE IF EXISTS sales;
+CREATE TABLE sales (
+ category TEXT,
+ amount INTEGER
+);
+INSERT INTO sales VALUES
+ ('A', 10),
+ ('A', 20),
+ ('B', 5);
+```
+
+```{sql}
+#| exercise: user_code_context
+SELECT
+ category,
+ SUM(amount) AS total
+FROM sales
+GROUP BY category;
+```
+
+```{sql}
+#| exercise: user_code_context
+#| check: true
+SELECT user_code ILIKE '%GROUP BY%' AS passed
+FROM __quarto_check_context;
+```
+
+Expected result: The check passes because the executed user code contains `GROUP BY`.
