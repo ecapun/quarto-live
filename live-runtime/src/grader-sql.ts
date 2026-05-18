@@ -54,7 +54,7 @@ export class SqlGrader extends ExerciseGrader {
   }
 
   async evaluateCheck(checkCode: string): Promise<SqlFeedback | null> {
-    const userCode = this.evaluator.lastRunSQL ?? this.context.code ?? "";
+    const userCode = this.evaluator.lastRunSql ?? this.context.code ?? "";
     const chekckCodeWithContext = `${buildSqlCheckContext(userCode)}\n${checkCode}`;
     
     const result = await this.evaluator.executeCheck(chekckCodeWithContext);
