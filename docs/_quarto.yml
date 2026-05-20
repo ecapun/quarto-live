@@ -13,9 +13,12 @@ website:
       - href: index.qmd
       - section: SQL integration
         contents:
-          - sql-test.qmd
-          - sql-grading-test.qmd
-          - sql-environments-test.qmd
+          - sql-test-execution.qmd
+          - sql-test-exercises.qmd
+          - sql-test-environments.qmd
+          - sql-test-grading.qmd
+          - sql-test-editor.qmd
+          - sql-test-meta.qmd
       - section: Getting Started
         contents:
           - getting_started/installation.qmd

@@ -1,0 +1,175 @@
+---
+title: "SQL Functional Tests - Execution"
+format: live-html
+---
+
+## Test 1: Client-side SQL execution and static delivery
+
+This test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.
+
+### Test 1.1: Basic execution across multiple blocks
+
+This test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.
+
+```{sql}
+DROP TABLE IF EXISTS functional_people;
+
+CREATE TABLE functional_people (
+  id INTEGER,
+  name TEXT
+);
+
+INSERT INTO functional_people VALUES
+  (1, 'Ada'),
+  (2, 'Linus');
+```
+
+```{sql}
+SELECT *
+FROM functional_people
+ORDER BY id;
+```
+
+Expected result: The second block displays two rows with the values inserted in the first block.
+
+---
+
+### Test 1.2: PostgreSQL type enforcement
+
+This test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.
+
+```{sql}
+#| edit: true
+DROP TABLE IF EXISTS type_check;
+
+CREATE TABLE type_check (
+  id INTEGER
+);
+
+INSERT INTO type_check VALUES ('not_an_integer');
+```
+
+Expected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.
+
+---
+
+### Test 1.3: Multiple statements in one block
+
+This test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.
+
+```{sql}
+DROP TABLE IF EXISTS multi_stmt;
+
+CREATE TABLE multi_stmt (
+  id INTEGER,
+  value TEXT
+);
+
+INSERT INTO multi_stmt VALUES
+  (1, 'first'),
+  (2, 'second'),
+  (3, 'third');
+
+SELECT * FROM multi_stmt ORDER BY id;
+```
+
+Expected result: The block executes all four statements. The output shows the three inserted rows as a table.
+
+---
+
+### Test 1.4: SQL error does not crash the page
+
+This test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.
+
+```{sql}
+#| edit: true
+SELECT * FROM table_that_does_not_exist;
+```
+
+Expected result: The error message `relation "table_that_does_not_exist" does not exist` is displayed as feedback. The rest of the page remains functional.
+
+## Test 2: Global state isolation and tabular output
+
+This test verifies that the global database state is isolated from exercise environments, and that tabular output correctly renders different PostgreSQL data types.
+
+### Test 2.1: Global state is isolated from exercise environments
+
+This test verifies that a table created in a normal SQL block is not accessible inside an exercise with its own environment, and that a table created inside an exercise does not leak into the global state.
+
+```{sql}
+DROP TABLE IF EXISTS global_only;
+
+CREATE TABLE global_only (
+  id INTEGER,
+  label TEXT
+);
+
+INSERT INTO global_only VALUES
+  (1, 'created in global block');
+```
+
+```{sql}
+#| exercise: isolation_check
+#| setup: true
+
+DROP TABLE IF EXISTS exercise_only;
+
+CREATE TABLE exercise_only (
+  id INTEGER,
+  label TEXT
+);
+
+INSERT INTO exercise_only VALUES
+  (1, 'created in exercise');
+```
+
+```{sql}
+#| exercise: isolation_check
+
+-- This should succeed: exercise_only exists in this environment
+SELECT * FROM exercise_only;
+```
+
+```{sql}
+#| exercise: isolation_check
+#| check: true
+
+-- global_only should NOT be visible in the exercise environment
+SELECT COUNT(*) = 0 AS passed
+FROM information_schema.tables
+WHERE table_name = 'global_only'
+  AND table_schema = 'public';
+```
+
+```{sql}
+-- This should succeed: global_only exists in the global environment
+SELECT * FROM global_only;
+```
+
+Expected result: The exercise block can access `exercise_only` but not `global_only`. The global block can access `global_only`. The check passes because `global_only` is not visible inside the exercise environment.
+
+---
+
+### Test 2.2: Tabular output with multiple PostgreSQL data types
+
+This test verifies that the tabular output correctly renders different PostgreSQL data types including INTEGER, TEXT, BOOLEAN, and NUMERIC.
+
+```{sql}
+DROP TABLE IF EXISTS type_output;
+
+CREATE TABLE type_output (
+  int_col    INTEGER,
+  text_col   TEXT,
+  bool_col   BOOLEAN,
+  num_col    NUMERIC(10, 2)
+);
+
+INSERT INTO type_output VALUES
+  (1, 'hello',  TRUE,  3.14),
+  (2, 'world',  FALSE, 2.71),
+  (3, 'pglite', TRUE,  1.41);
+
+SELECT * FROM type_output ORDER BY int_col;
+```
+
+Expected result: The output table shows three rows with all four columns correctly rendered. Boolean values appear as `true` or `false`, and numeric values show two decimal places.

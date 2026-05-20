@@ -1,0 +1,204 @@
+---
+title: "SQL Exercise Tests"
+format: live-html
+---
+
+This document tests SQL exercise behavior including setup code execution, isolation from the global environment, shared setup across multiple exercises, and the Start Over functionality.
+
+---
+
+## Test 1: Basic exercise with setup
+
+This test verifies that setup code is executed before the learner's code, and that the learner can access tables created in the setup block.
+
+```{sql}
+#| exercise: ex_basic
+#| setup: true
+
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE products (
+  id      INTEGER,
+  name    TEXT,
+  price   NUMERIC(10, 2)
+);
+
+INSERT INTO products VALUES
+  (1, 'Book',  20.00),
+  (2, 'Pen',    5.00),
+  (3, 'Bag',   50.00);
+```
+
+```{sql}
+#| exercise: ex_basic
+
+SELECT * FROM products ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_basic
+#| check: true
+
+SELECT COUNT(*) = 3 AS passed
+FROM products;
+```
+
+Expected result: The exercise block can access the `products` table created in the setup block. The check passes because the table contains exactly three rows.
+
+---
+
+## Test 2: SQL exercises are fully isolated from the global database
+
+This test verifies that SQL exercises cannot access tables created in normal global SQL blocks. Unlike WebR and Python exercises, each SQL exercise uses its own dedicated PGlite instance. This means that global SQL blocks and exercise blocks do not share the same database state, even when given the same `envir` label.
+
+```{sql}
+DROP TABLE IF EXISTS global_ref;
+
+CREATE TABLE global_ref (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO global_ref VALUES
+  (1, 'global row');
+```
+
+```{sql}
+#| exercise: ex_global_isolation
+
+-- Attempt to access a table created in the global environment.
+-- This should fail because exercises use a separate PGlite instance.
+SELECT * FROM global_ref;
+```
+
+Expected result: The exercise block produces the error `relation "global_ref" does not exist`. This confirms that SQL exercises are fully isolated from the global database state. The correct way to prepare data for an exercise is to use a `setup: true` block, not a global SQL block.
+
+---
+
+## Test 3: Setup block is the correct way to share data with exercises
+
+This test verifies that a `setup: true` block is executed inside the exercise's own PGlite instance and is therefore the correct mechanism for preparing data that exercises can access.
+
+```{sql}
+#| exercise: ex_setup_correct
+#| setup: true
+
+DROP TABLE IF EXISTS setup_ref;
+
+CREATE TABLE setup_ref (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO setup_ref VALUES
+  (1, 'setup row');
+```
+
+```{sql}
+#| exercise: ex_setup_correct
+
+SELECT * FROM setup_ref;
+```
+
+```{sql}
+#| exercise: ex_setup_correct
+#| check: true
+
+SELECT COUNT(*) = 1 AS passed
+FROM setup_ref;
+```
+
+Expected result: The exercise block can access `setup_ref` because it was created inside the exercise's own PGlite instance via the setup block. The check passes. This contrasts with Test 2, where a global block could not be accessed from an exercise.
+
+---
+
+## Test 4: Shared setup for multiple exercises
+
+This test verifies that a single setup block can be shared across multiple exercises by providing a list of exercise labels.
+
+```{sql}
+#| setup: true
+#| exercise:
+#|   - ex_shared_a
+#|   - ex_shared_b
+
+DROP TABLE IF EXISTS shared_data;
+
+CREATE TABLE shared_data (
+  id    INTEGER,
+  value INTEGER
+);
+
+INSERT INTO shared_data VALUES
+  (1, 10),
+  (2, 20),
+  (3, 30);
+```
+
+```{sql}
+#| exercise: ex_shared_a
+
+SELECT SUM(value) AS total FROM shared_data;
+```
+
+```{sql}
+#| exercise: ex_shared_a
+#| check: true
+
+SELECT SUM(value) = 60 AS passed FROM shared_data;
+```
+
+```{sql}
+#| exercise: ex_shared_b
+
+SELECT MAX(value) AS maximum FROM shared_data;
+```
+
+```{sql}
+#| exercise: ex_shared_b
+#| check: true
+
+SELECT MAX(value) = 30 AS passed FROM shared_data;
+```
+
+Expected result: Both exercises can access `shared_data` from the shared setup block. Both checks pass.
+
+---
+
+## Test 5: Start Over resets state and replays setup
+
+This test verifies that clicking Start Over resets the editor content to the original code and replays the setup block, restoring the exercise to its initial state.
+
+```{sql}
+#| exercise: ex_start_over
+#| setup: true
+
+DROP TABLE IF EXISTS start_over_items;
+
+CREATE TABLE start_over_items (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO start_over_items VALUES
+  (1, 'setup row');
+```
+
+```{sql}
+#| exercise: ex_start_over
+
+-- Step 1: Run this block to add a row
+INSERT INTO start_over_items VALUES (2, 'user row');
+
+SELECT * FROM start_over_items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_start_over
+#| check: true
+
+SELECT COUNT(*) = 2 AS passed
+FROM start_over_items;
+```
+
+Expected result: After running the exercise block, the table contains two rows and the check passes. After clicking Start Over, the editor resets to the original code and the setup is replayed. Running the block again should again produce two rows, confirming that the state was cleanly reset.

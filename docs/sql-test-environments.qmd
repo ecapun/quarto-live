@@ -1,0 +1,170 @@
+---
+title: "SQL Environment Tests"
+format: live-html
+---
+
+This document tests isolated and shared SQL exercise environments, including interference prevention between exercises and the behavior of Start Over in shared environments.
+
+---
+
+## Test 1: Isolated exercises do not interfere with each other
+
+This test verifies that two exercises using the same table name do not interfere with each other. Each exercise without an explicit `envir` gets its own dedicated PGlite instance.
+
+```{sql}
+#| exercise: ex_isolated_a
+#| setup: true
+
+DROP TABLE IF EXISTS items;
+
+CREATE TABLE items (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO items VALUES
+  (1, 'first exercise setup row');
+```
+
+```{sql}
+#| exercise: ex_isolated_a
+
+INSERT INTO items VALUES (2, 'first exercise user row');
+
+SELECT * FROM items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_isolated_a
+#| check: true
+
+SELECT COUNT(*) = 2 AS passed FROM items;
+```
+
+```{sql}
+#| exercise: ex_isolated_b
+#| setup: true
+
+DROP TABLE IF EXISTS items;
+
+CREATE TABLE items (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO items VALUES
+  (1, 'second exercise setup row');
+```
+
+```{sql}
+#| exercise: ex_isolated_b
+
+SELECT * FROM items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_isolated_b
+#| check: true
+
+SELECT COUNT(*) = 1 AS passed FROM items;
+```
+
+Expected result: The first exercise contains two rows after execution. The second exercise contains only its own setup row. This confirms that both exercises use separate PGlite instances and do not share state, even when using the same table name.
+
+---
+
+## Test 2: Shared environment across multiple exercises
+
+This test verifies that multiple exercises with the same `envir` label share a single PGlite instance. Changes made in one exercise are visible in later exercises with the same `envir`.
+
+```{sql}
+#| exercise: ex_shared_one
+#| envir: shared_env
+#| setup: true
+
+DROP TABLE IF EXISTS shared_items;
+
+CREATE TABLE shared_items (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO shared_items VALUES
+  (1, 'created in shared setup');
+```
+
+```{sql}
+#| exercise: ex_shared_one
+#| envir: shared_env
+
+INSERT INTO shared_items VALUES (2, 'added in first exercise');
+
+SELECT * FROM shared_items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_shared_one
+#| envir: shared_env
+#| check: true
+
+SELECT COUNT(*) = 2 AS passed FROM shared_items;
+```
+
+```{sql}
+#| exercise: ex_shared_two
+#| envir: shared_env
+
+INSERT INTO shared_items VALUES (3, 'added in second exercise');
+
+SELECT * FROM shared_items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_shared_two
+#| envir: shared_env
+#| check: true
+
+SELECT COUNT(*) = 3 AS passed FROM shared_items;
+```
+
+Expected result: After running both exercises in order, the shared table contains three rows. The second exercise can access rows inserted by the first exercise, confirming that both exercises share the same PGlite instance via the `envir` label.
+
+---
+
+## Test 3: Start Over in a shared environment
+
+This test verifies the behavior of Start Over when exercises share an environment. Clicking Start Over on one exercise should reset that exercise's editor content and replay its setup, but the shared environment state may be affected.
+
+```{sql}
+#| exercise: ex_start_shared_a
+#| envir: start_over_env
+#| setup: true
+
+DROP TABLE IF EXISTS start_items;
+
+CREATE TABLE start_items (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO start_items VALUES
+  (1, 'setup row');
+```
+
+```{sql}
+#| exercise: ex_start_shared_a
+#| envir: start_over_env
+
+INSERT INTO start_items VALUES (2, 'added by first exercise');
+
+SELECT * FROM start_items ORDER BY id;
+```
+
+```{sql}
+#| exercise: ex_start_shared_b
+#| envir: start_over_env
+
+SELECT * FROM start_items ORDER BY id;
+```
+
+Expected result: After running both exercises, `ex_start_shared_b` shows two rows. After clicking Start Over on `ex_start_shared_a` and running it again, observe whether `ex_start_shared_b` still sees the previously inserted row or whether the shared state was affected. This documents the behavior of Start Over in shared environments.

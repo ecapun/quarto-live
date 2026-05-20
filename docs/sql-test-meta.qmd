@@ -1,0 +1,189 @@
+---
+title: "SQL Meta Command Tests"
+format: live-html
+---
+
+This document tests psql-style meta commands in the SQL extension, including table listing, column inspection, role listing, environment isolation, and autocomplete for meta commands.
+
+---
+
+## Test 1: Table Listing
+
+This test verifies that `\dt` lists all tables in the current PGlite environment.
+
+```{sql}
+DROP TABLE IF EXISTS meta_table_a;
+DROP TABLE IF EXISTS meta_table_b;
+
+CREATE TABLE meta_table_a (id INTEGER, label TEXT);
+CREATE TABLE meta_table_b (id INTEGER, value NUMERIC);
+
+INSERT INTO meta_table_a VALUES (1, 'row a');
+INSERT INTO meta_table_b VALUES (1, 42.0);
+```
+
+```{sql}
+#| edit: true
+\dt
+```
+
+Expected result: The output lists `meta_table_a` and `meta_table_b` as available tables in the current environment.
+
+---
+
+## Test 2: Column Inspection
+
+This test verifies that `\d tablename` shows the column names and data types of a specific table.
+
+```{sql}
+DROP TABLE IF EXISTS meta_columns_test;
+
+CREATE TABLE meta_columns_test (
+  id       INTEGER,
+  name     TEXT,
+  score    NUMERIC,
+  active   BOOLEAN
+);
+```
+
+```{sql}
+#| edit: true
+\d meta_columns_test
+```
+
+Expected result: The output shows Table "public.meta_columns_test". Column details are returned as formatted text by psql-describe but are not fully rendered in tabular form by the SQL evaluator's normalizeDescribeOutput function.
+
+---
+
+## Test 3: Role Listing
+
+This test verifies that `\du` lists the available database roles in the current PGlite instance.
+
+```{sql}
+#| edit: true
+\du
+```
+
+Expected result: The output lists the available database roles. Since PGlite runs as a single-user in-browser database, typically only one role is shown.
+
+---
+
+## Test 4: Environment Isolation of Meta Commands
+
+This test verifies that `\dt` in one exercise environment does not show tables from a different exercise environment.
+
+```{sql}
+#| exercise: ex_meta_a
+#| envir: meta_env_a
+#| setup: true
+
+DROP TABLE IF EXISTS table_only_in_a;
+
+CREATE TABLE table_only_in_a (
+  id INTEGER
+);
+
+INSERT INTO table_only_in_a VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_meta_a
+#| envir: meta_env_a
+
+\dt
+```
+
+```{sql}
+#| exercise: ex_meta_b
+#| envir: meta_env_b
+#| setup: true
+
+DROP TABLE IF EXISTS table_only_in_b;
+
+CREATE TABLE table_only_in_b (
+  id INTEGER
+);
+
+INSERT INTO table_only_in_b VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_meta_b
+#| envir: meta_env_b
+
+\dt
+```
+
+Expected result: The `\dt` output in `ex_meta_a` shows only `table_only_in_a`. The `\dt` output in `ex_meta_b` shows only `table_only_in_b`. Tables from different environments do not appear in each other's listings.
+
+---
+
+## Test 5: Meta Commands in the Global Environment
+
+This test verifies that `\dt` in a global SQL block shows only tables created in the global environment, not tables from exercise environments.
+
+```{sql}
+DROP TABLE IF EXISTS global_meta_table;
+
+CREATE TABLE global_meta_table (
+  id INTEGER,
+  label TEXT
+);
+
+INSERT INTO global_meta_table VALUES (1, 'global row');
+```
+
+```{sql}
+#| exercise: ex_meta_global_check
+#| setup: true
+
+DROP TABLE IF EXISTS exercise_meta_table;
+
+CREATE TABLE exercise_meta_table (
+  id INTEGER
+);
+```
+
+```{sql}
+#| exercise: ex_meta_global_check
+
+\dt
+```
+
+```{sql}
+#| edit: true
+
+\dt
+```
+
+Expected result: The `\dt` in the exercise block shows only `exercise_meta_table`. The `\dt` in the global block shows all global available tables. Tables from exercises are not visible in the global environment and vice versa.
+
+---
+
+## Test 6: Invalid Meta Command Handling
+
+This test verifies that an invalid meta command produces a meaningful error message rather than crashing the page.
+
+```{sql}
+#| edit: true
+\invalidcommand
+```
+
+Expected result: The block produces an error message indicating that the meta command is not recognized. The page remains functional.
+
+---
+
+## Test 7: Meta Command Autocomplete
+
+This test verifies that the SQL editor suggests available meta commands when the user types a backslash.
+
+```{sql}
+#| edit: true
+
+-- Type "\" to verify that meta command suggestions appear,
+-- including \dt, \d, \du and other supported commands.
+-- before executing please delete all comments in the editor.
+\dt
+```
+
+Expected result: When typing `\` in the editor, the autocomplete suggests available meta commands such as `\dt`, `\d`, `\du`. This confirms that meta commands are registered as a separate autocomplete group alongside schema-based suggestions.

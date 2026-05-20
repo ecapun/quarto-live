@@ -71,6 +71,7 @@ Expected result: After running the blocks in order, the second block displays tw
 This test verifies that normal SQL blocks share a global database state. A table created in one normal SQL block should be available in later normal SQL blocks. This also demonstrates that a normal SQL block can function as a document-wide preparation step comparable to a limited before-all mechanism when executed before later blocks.
 
 ```{sql}
+#| edit: false
 DROP TABLE IF EXISTS global_numbers;
 
 CREATE TABLE global_numbers (

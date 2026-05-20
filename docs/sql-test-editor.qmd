@@ -1,0 +1,233 @@
+---
+title: "SQL Editor Tests"
+format: live-html
+---
+
+This document tests editor-related features of the SQL extension, including the `edit` and `autorun` options, schema-aware autocomplete, and autocomplete availability across different environments.
+
+---
+
+## Test 1: Automatic Execution Without Editor
+
+This test verifies that a SQL block with `edit: false` is executed automatically when the page loads, without displaying an editor to the user.
+
+```{sql}
+#| edit: false
+
+DROP TABLE IF EXISTS edit_false_test;
+
+CREATE TABLE edit_false_test (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO edit_false_test VALUES
+  (1, 'created without editor');
+
+SELECT * FROM edit_false_test;
+```
+
+Expected result: The block is executed automatically when the page loads. No editor is visible. The output table is displayed directly below the block.
+
+---
+
+## Test 2: Automatic Execution With Editor
+
+This test verifies that a SQL block with `autorun: true` is executed automatically when the editor is initialized, without requiring the user to click Run Code.
+
+```{sql}
+#| exercise: ex_autorun
+#| autorun: true
+
+DROP TABLE IF EXISTS autorun_test;
+
+CREATE TABLE autorun_test (
+  id    INTEGER,
+  label TEXT
+);
+
+INSERT INTO autorun_test VALUES
+  (1, 'created by autorun');
+
+SELECT * FROM autorun_test;
+```
+
+```{sql}
+#| exercise: ex_autorun
+#| check: true
+
+SELECT COUNT(*) = 1 AS passed FROM autorun_test;
+```
+
+Expected result: The editor is visible and the block is executed automatically when the page loads. The output table is displayed and the check passes without the user clicking Run Code.
+
+---
+
+## Test 3: Combining edit: false and autorun: true
+
+This test verifies that combining `edit: false` with `autorun: true` has no additional effect. The block is executed automatically regardless of `autorun` because `edit: false` already triggers automatic execution.
+
+```{sql}
+#| edit: false
+#| autorun: true
+
+SELECT 'edit false with autorun true' AS result;
+```
+
+Expected result: The block is executed automatically. No editor is visible. The behavior is identical to `edit: false` alone.
+
+---
+
+## Test 4: Schema-aware Autocomplete
+
+This section tests that the SQL editor suggests table and column names based on the current PGlite schema.
+
+### Test 4.1: Autocomplete After Execution
+
+This test verifies that after executing a SQL block that creates a table, the editor suggests the table name and its columns when typing.
+
+```{sql}
+DROP TABLE IF EXISTS autocomplete_items;
+
+CREATE TABLE autocomplete_items (
+  id      INTEGER,
+  label   TEXT,
+  amount  INTEGER
+);
+
+INSERT INTO autocomplete_items VALUES
+  (1, 'first',  10),
+  (2, 'second', 20);
+```
+
+```{sql}
+#| edit: true
+
+-- After running the block above, type "autocomplete_" or column names
+-- to verify that schema-aware suggestions appear.
+SELECT id, label, amount
+FROM autocomplete_items as a
+ORDER BY id;
+```
+
+Expected result: After executing the first block, the editor in the second block suggests `autocomplete_items` as a table name and `id`, `label`, `amount` as column names when typing.
+
+---
+
+### Test 4.2: Autocomplete is Environment-specific
+
+This test verifies that autocomplete suggestions are based on the current environment. Tables from a different environment should not appear as suggestions.
+
+```{sql}
+#| exercise: ex_autocomplete_a
+#| envir: autocomplete_env_a
+#| setup: true
+
+DROP TABLE IF EXISTS table_env_a;
+
+CREATE TABLE table_env_a (
+  id INTEGER,
+  value TEXT
+);
+
+INSERT INTO table_env_a VALUES (1, 'env_a row');
+```
+
+```{sql}
+#| exercise: ex_autocomplete_a
+#| envir: autocomplete_env_a
+
+-- Type "table_env" to verify that only table_env_a is suggested,
+-- not table_env_b from a different environment.
+SELECT * FROM table_env_a;
+```
+
+```{sql}
+#| exercise: ex_autocomplete_b
+#| envir: autocomplete_env_b
+#| setup: true
+
+DROP TABLE IF EXISTS table_env_b;
+
+CREATE TABLE table_env_b (
+  id INTEGER,
+  value TEXT
+);
+
+INSERT INTO table_env_b VALUES (1, 'env_b row');
+```
+
+```{sql}
+#| exercise: ex_autocomplete_b
+#| envir: autocomplete_env_b
+
+-- Type "table_env" to verify that only table_env_b is suggested,
+-- not table_env_a from a different environment.
+SELECT * FROM table_env_b;
+```
+
+Expected result: The editor in `ex_autocomplete_a` suggests only `table_env_a`, and the editor in `ex_autocomplete_b` suggests only `table_env_b`. Tables from different environments do not appear in each other's autocomplete suggestions.
+
+---
+
+### Test 4.3: Autocomplete in Global Environment
+
+This test verifies that tables created in global SQL blocks appear as autocomplete suggestions in later global blocks.
+
+```{sql}
+DROP TABLE IF EXISTS global_autocomplete;
+
+CREATE TABLE global_autocomplete (
+  id    INTEGER,
+  name  TEXT,
+  score NUMERIC
+);
+
+INSERT INTO global_autocomplete VALUES
+  (1, 'Alice', 95.5),
+  (2, 'Bob',   87.0);
+```
+
+```{sql}
+#| edit: true
+
+-- Type "global_autocomplete" or column names to verify suggestions.
+SELECT id, name, score
+FROM global_autocomplete
+ORDER BY score DESC;
+```
+
+Expected result: After executing the first block, the editor suggests `global_autocomplete` and its columns `id`, `name`, `score` in the second block.
+
+---
+
+## Test 5: Autocomplete Before First Execution
+
+This test verifies that when an exercise has a setup block, the schema is already available for autocomplete before the learner runs any code. The setup block is executed in a separate completion environment to enable early schema suggestions.
+
+```{sql}
+#| exercise: ex_early_autocomplete
+#| setup: true
+
+DROP TABLE IF EXISTS early_schema;
+
+CREATE TABLE early_schema (
+  id       INTEGER,
+  product  TEXT,
+  price    NUMERIC
+);
+
+INSERT INTO early_schema VALUES
+  (1, 'Book', 20),
+  (2, 'Pen',   5);
+```
+
+```{sql}
+#| exercise: ex_early_autocomplete
+
+-- Without running any code first, type "early_schema" or column names.
+-- The editor should already suggest them based on the setup block.
+SELECT * FROM early_schema;
+```
+
+Expected result: Before the exercise block is executed for the first time, the editor already suggests `early_schema` and its columns `id`, `product`, `price`. This confirms that the setup block is executed in a separate completion environment to enable schema-aware suggestions from the start.

@@ -1,0 +1,345 @@
+---
+title: "SQL Grading Tests"
+format: live-html
+---
+
+This document tests the grading and check logic of SQL exercises, including correct and incorrect grading results, error feedback, value validation, and the behavior of `__quarto_check_context` in various scenarios.
+
+---
+
+## Test 1: Correct grading result
+
+This test verifies that a check returns a correct grading result when the exercise solution meets the expected conditions.
+
+```{sql}
+#| exercise: ex_grade_correct
+#| setup: true
+
+DROP TABLE IF EXISTS grading_numbers;
+
+CREATE TABLE grading_numbers (
+  value INTEGER
+);
+```
+
+```{sql}
+#| exercise: ex_grade_correct
+
+INSERT INTO grading_numbers VALUES (1), (2), (3);
+```
+
+```{sql}
+#| exercise: ex_grade_correct
+#| check: true
+
+SELECT COUNT(*) = 3 AS passed
+FROM grading_numbers;
+```
+
+Expected result: The check passes because the table contains exactly three rows.
+
+---
+
+## Test 2: Negative grading result
+
+This test verifies that a check returns a negative grading result when the exercise solution does not meet the expected conditions.
+
+```{sql}
+#| exercise: ex_grade_incorrect
+#| setup: true
+
+DROP TABLE IF EXISTS grading_fail_numbers;
+
+CREATE TABLE grading_fail_numbers (
+  value INTEGER
+);
+```
+
+```{sql}
+#| exercise: ex_grade_incorrect
+
+INSERT INTO grading_fail_numbers VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_grade_incorrect
+#| check: true
+
+SELECT COUNT(*) = 3 AS passed
+FROM grading_fail_numbers;
+```
+
+Expected result: The check fails because the table contains only one row instead of three.
+
+---
+
+## Test 3: SQL error as feedback
+
+This test verifies that a SQL error in the exercise block is displayed as feedback and does not produce an uncaught browser error.
+
+```{sql}
+#| exercise: ex_grade_error
+#| check: true
+
+SELECT COUNT(*) = 0 AS passed
+FROM grading_fail_numbers;
+```
+
+```{sql}
+#| exercise: ex_grade_error
+
+INSERT INTO table_that_does_not_exist VALUES (1);
+```
+
+Expected result: The error `relation "table_that_does_not_exist" does not exist` is displayed as feedback. The check is not executed because the exercise block produced an error.
+
+---
+
+## Test 4: Check validates inserted values
+
+This test verifies that the check can evaluate not only the number of rows but also the actual data inserted by the exercise.
+
+```{sql}
+#| exercise: ex_grade_values
+#| setup: true
+
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE products (
+  id      INTEGER,
+  name    TEXT,
+  price   NUMERIC(10, 2)
+);
+```
+
+```{sql}
+#| exercise: ex_grade_values
+
+INSERT INTO products VALUES
+  (1, 'Book',  20.00),
+  (2, 'Pen',    5.00),
+  (3, 'Bag',   50.00);
+```
+
+```{sql}
+#| exercise: ex_grade_values
+#| check: true
+
+SELECT
+  COUNT(*) = 3
+  AND SUM(price) = 75
+  AND MAX(price) = 50
+  AS passed
+FROM products;
+```
+
+Expected result: The check passes because the expected rows and values were inserted.
+
+---
+
+## Test 5: __quarto_check_context isolation
+
+This section tests the visibility and isolation of `__quarto_check_context` across different blocks and environments.
+
+### Test 5.1: Exercise block cannot access __quarto_check_context
+
+This test verifies that `__quarto_check_context` is not visible in the exercise block itself, only during check execution.
+
+```{sql}
+#| exercise: ex_ctx_isolation_a
+#| setup: true
+
+DROP TABLE IF EXISTS ctx_test;
+CREATE TABLE ctx_test (id INTEGER);
+INSERT INTO ctx_test VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_ctx_isolation_a
+
+-- Attempt to access __quarto_check_context from the exercise block
+SELECT * FROM __quarto_check_context;
+```
+
+```{sql}
+#| exercise: ex_ctx_isolation_a
+#| check: true
+
+SELECT COUNT(*) = 1 AS passed FROM ctx_test;
+```
+
+Expected result: The exercise block produces the error `relation "__quarto_check_context" does not exist`. The check itself passes because it runs after the context table is created by the grader.
+
+---
+
+### Test 5.2: Another exercise in the same envir cannot access __quarto_check_context
+
+This test verifies that `__quarto_check_context` created during one exercise's check is not visible to another exercise sharing the same `envir`.
+
+```{sql}
+#| exercise: ex_ctx_shared_a
+#| envir: ctx_shared_env
+#| setup: true
+
+DROP TABLE IF EXISTS ctx_shared;
+CREATE TABLE ctx_shared (id INTEGER);
+INSERT INTO ctx_shared VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_ctx_shared_a
+#| envir: ctx_shared_env
+
+INSERT INTO ctx_shared VALUES (2);
+```
+
+```{sql}
+#| exercise: ex_ctx_shared_a
+#| envir: ctx_shared_env
+#| check: true
+
+SELECT COUNT(*) = 2 AS passed FROM ctx_shared;
+```
+
+```{sql}
+#| exercise: ex_ctx_shared_b
+#| envir: ctx_shared_env
+
+-- Attempt to access __quarto_check_context from a different exercise in the same envir
+SELECT * FROM __quarto_check_context;
+```
+
+Expected result: `ex_ctx_shared_b` produces the error `relation "__quarto_check_context" does not exist`. This confirms that `__quarto_check_context` is only available during check execution and is not persistent in the shared environment.
+
+---
+
+### Test 5.3: Global block cannot access __quarto_check_context
+
+This test verifies that `__quarto_check_context` is not visible in the global environment.
+
+```{sql}
+#| exercise: ex_ctx_global
+#| setup: true
+
+DROP TABLE IF EXISTS ctx_global_test;
+CREATE TABLE ctx_global_test (id INTEGER);
+INSERT INTO ctx_global_test VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_ctx_global
+
+SELECT * FROM ctx_global_test;
+```
+
+```{sql}
+#| exercise: ex_ctx_global
+#| check: true
+
+SELECT COUNT(*) = 1 AS passed FROM ctx_global_test;
+```
+
+```{sql}
+-- Attempt to access __quarto_check_context from a global block
+SELECT * FROM __quarto_check_context;
+```
+
+Expected result: The global block produces the error `relation "__quarto_check_context" does not exist`. This confirms that `__quarto_check_context` is not visible outside of check execution.
+
+---
+
+### Test 5.4: Check code error behavior
+
+This test verifies what happens when the check code itself produces a SQL error.
+
+```{sql}
+#| exercise: ex_ctx_check_error
+#| setup: true
+
+DROP TABLE IF EXISTS check_error_test;
+CREATE TABLE check_error_test (id INTEGER);
+INSERT INTO check_error_test VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_ctx_check_error
+
+SELECT * FROM check_error_test;
+```
+
+```{sql}
+#| exercise: ex_ctx_check_error
+#| check: true
+
+-- This check contains a SQL error
+SELECT COUNT(*) = 1 AS passed FROM table_that_does_not_exist;
+```
+
+Expected result: The check produces an error and displays it as negative feedback. The exercise block itself executed successfully.
+
+---
+
+---
+
+### Test 5.5: user_code in __quarto_check_context reflects last execution
+
+This test verifies that `__quarto_check_context.user_code` contains the SQL code from the most recent exercise execution.
+
+```{sql}
+#| exercise: ex_ctx_user_code
+#| setup: true
+
+DROP TABLE IF EXISTS user_code_test;
+CREATE TABLE user_code_test (id INTEGER);
+```
+
+```{sql}
+#| exercise: ex_ctx_user_code
+
+INSERT INTO user_code_test VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_ctx_user_code
+#| check: true
+
+SELECT
+  user_code LIKE '%INSERT%' AS passed
+FROM __quarto_check_context;
+```
+
+Expected result: The check passes because `user_code` contains the INSERT statement from the exercise block. This confirms that `__quarto_check_context` reflects the most recently executed exercise code.
+
+---
+
+## Test 6: Custom feedback message from check
+
+This test verifies that when a check returns a string value that does not match any positive pattern, the string is displayed directly as feedback to the learner.
+
+```{sql}
+#| exercise: ex_custom_feedback
+#| setup: true
+
+DROP TABLE IF EXISTS feedback_test;
+CREATE TABLE feedback_test (id INTEGER);
+```
+
+```{sql}
+#| exercise: ex_custom_feedback
+
+INSERT INTO feedback_test VALUES (1);
+```
+
+```{sql}
+#| exercise: ex_custom_feedback
+#| check: true
+
+SELECT
+  CASE
+    WHEN COUNT(*) = 3 THEN 'correct'
+    ELSE 'Insert exactly 3 rows into the table.'
+  END AS feedback
+FROM feedback_test;
+```
+
+Expected result: Since only one row was inserted, the check returns the string `Insert exactly 3 rows into the table.` which is displayed directly as feedback to the learner.
