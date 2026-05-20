@@ -1,0 +1,1350 @@
+[
+  {
+    "objectID": "sql-test.html",
+    "href": "sql-test.html",
+    "title": "SQL Environment Test",
+    "section": "",
+    "text": "This document tests SQL execution, global environments, isolated exercise environments, shared environments, tabular output, error handling, and schema-aware autocomplete.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#multi-statement",
+    "href": "sql-test.html#multi-statement",
+    "title": "SQL Test",
+    "section": "Multi-Statement",
+    "text": "Multi-Statement"
+  },
+  {
+    "objectID": "sql-test.html#zweiter-select-auf-gleicher-environment-db",
+    "href": "sql-test.html#zweiter-select-auf-gleicher-environment-db",
+    "title": "SQL Test",
+    "section": "Zweiter Select auf gleicher Environment-DB",
+    "text": "Zweiter Select auf gleicher Environment-DB"
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-2-falsch",
+    "href": "sql-grading-test.html#fall-2-falsch",
+    "title": "SQL Grading Test",
+    "section": "Fall 2 falsch",
+    "text": "Fall 2 falsch",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-3-check-fehler",
+    "href": "sql-grading-test.html#fall-3-check-fehler",
+    "title": "SQL Grading Test",
+    "section": "Fall 3 Check-Fehler",
+    "text": "Fall 3 Check-Fehler",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-4-string-feedback",
+    "href": "sql-grading-test.html#fall-4-string-feedback",
+    "title": "SQL Grading Test",
+    "section": "Fall 4 String-Feedback",
+    "text": "Fall 4 String-Feedback",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-2-falsch-aufgabe-2",
+    "href": "sql-grading-test.html#fall-2-falsch-aufgabe-2",
+    "title": "SQL Grading Test",
+    "section": "Fall 2 falsch Aufgabe 2",
+    "text": "Fall 2 falsch Aufgabe 2"
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-3-check-fehler-aufgabe-3",
+    "href": "sql-grading-test.html#fall-3-check-fehler-aufgabe-3",
+    "title": "SQL Grading Test",
+    "section": "Fall 3 Check-Fehler Aufgabe 3",
+    "text": "Fall 3 Check-Fehler Aufgabe 3"
+  },
+  {
+    "objectID": "sql-grading-test.html#fall-4-string-feedback-aufgabe-4",
+    "href": "sql-grading-test.html#fall-4-string-feedback-aufgabe-4",
+    "title": "SQL Grading Test",
+    "section": "Fall 4 String-Feedback Aufgabe 4",
+    "text": "Fall 4 String-Feedback Aufgabe 4"
+  },
+  {
+    "objectID": "sql-test.html#global-session",
+    "href": "sql-test.html#global-session",
+    "title": "SQL Test",
+    "section": "",
+    "text": "no envir defined == global",
+    "crumbs": [
+      "SQL integration",
+      "SQL Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#exercise-without-manual-envir",
+    "href": "sql-test.html#exercise-without-manual-envir",
+    "title": "SQL Test",
+    "section": "Exercise without manual envir",
+    "text": "Exercise without manual envir",
+    "crumbs": [
+      "SQL integration",
+      "SQL Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#follow-on-exercise-wiht-specific-assigned-envir-from-author",
+    "href": "sql-test.html#follow-on-exercise-wiht-specific-assigned-envir-from-author",
+    "title": "SQL Test",
+    "section": "Follow-on Exercise wiht specific assigned envir from author",
+    "text": "Follow-on Exercise wiht specific assigned envir from author",
+    "crumbs": [
+      "SQL integration",
+      "SQL Test"
+    ]
+  },
+  {
+    "objectID": "webr-regression-test.html#exercise-ohne-manuelles-envir",
+    "href": "webr-regression-test.html#exercise-ohne-manuelles-envir",
+    "title": "WebR Regression Test",
+    "section": "Exercise ohne manuelles envir",
+    "text": "Exercise ohne manuelles envir"
+  },
+  {
+    "objectID": "webr-regression-test.html#follow-on-exercises-mit-manuellem-envir",
+    "href": "webr-regression-test.html#follow-on-exercises-mit-manuellem-envir",
+    "title": "WebR Regression Test",
+    "section": "Follow-on Exercises mit manuellem envir",
+    "text": "Follow-on Exercises mit manuellem envir"
+  },
+  {
+    "objectID": "exercises/exercises.html",
+    "href": "exercises/exercises.html",
+    "title": "Creating Exercises",
+    "section": "",
+    "text": "The quarto-live extension allows you to define a collection of linked code cells and blocks to form an exercise. An exercise is fundamentally an interactive code block, but with the addition of optional setup code, hints, solutions, and grading.",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/exercises.html#create-an-exercise",
+    "href": "exercises/exercises.html#create-an-exercise",
+    "title": "Creating Exercises",
+    "section": "Create an Exercise",
+    "text": "Create an Exercise\nTo designate a webr block as an exercise set the exercise cell option, giving it a unique label. Later we will link additional features to the exercise by referring to this label.\n\nSource\n\n\nexercise.qmd\n\nFill in the blank so that the result of the sum is 10.\n\n```{webr}\n#| exercise: ex_1\n1 + 2 + 3 + ______\n```\n\n\n\nOutput\nFill in the blank so that the result of the sum is 10.\n\n\n\n\n\n\n\n\nExercises may optionally include a series of six or more underscores, designated as “blanks”. The learner will be prompted to replace the blanks with code when evaluating an exercise.\n\n\n\n\n\n\nNote\n\n\n\nUnlike standard interactive code blocks, exercises do not auto-evaluate by default – the “Run Code” button must be activated by the learner to evaluate the code.",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/exercises.html#running-setup-code",
+    "href": "exercises/exercises.html#running-setup-code",
+    "title": "Creating Exercises",
+    "section": "Running setup code",
+    "text": "Running setup code\nOften you will want to run some setup code in preparation for your exercise. For example, you might want to ensure a package is available, or prepare for some data to be used in the exercise.\nDesignate a webr block as an exercise setup block by setting the setup: true cell option. Then, set the exercise cell option so as to match an existing exercise. The code in the exercise setup cell will be executed before every evaluation of the learner’s code.\n\nSource\nFill in the blank so that the result of the sum is 10.\n\n\nexercise.qmd\n\n```{webr}\n#| setup: true\n#| exercise: ex_2\nfoo &lt;- 1\nbar &lt;- 2\nbaz &lt;- 3\n```\n\n```{webr}\n#| exercise: ex_2\nfoo + bar + baz + ______\n```\n\n\n\nOutput\nFill in the blank so that the result of the sum is 10.\n\n\n\n\n\n\n\n\n\n\n\n\n\nShared setup\nA setup block may be attached to multiple exercises by providing a list of exercises for the exercise cell option. The code in the setup cell will be executed before every evaluation of any of the listed exercises.\n\nSource\n\n\nexercise.qmd\n\n```{webr}\n#| setup: true\n#| exercise:\n#|   - ex_a1\n#|   - ex_a2\nvar_xyz &lt;- c(1, 3, 7, 9, 13, 15)\n```\n\n```{webr}\n#| exercise: ex_a1\nvar_xyz * 2\n```\n\n```{webr}\n#| exercise: ex_a2\nvar_xyz ** 2\n```\n\n\n\nOutput",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/exercises.html#adding-hints-and-solutions",
+    "href": "exercises/exercises.html#adding-hints-and-solutions",
+    "title": "Creating Exercises",
+    "section": "Adding hints and solutions",
+    "text": "Adding hints and solutions\nAdd hints and solutions to your exercise in the form of fenced blocks. The blocks should set the .hint or .solution class. Then, link the blocks to your exercise by setting the exercise attribute.\nLinked exercises will display UI button elements to reveal hints and solutions. Multiple hints and solutions blocks can be linked; hints will be revealed progressively and all solutions at once.\n\nSource\n\n\nexercise.qmd\n\nFilter the `starwars` dataset so that only the droid characters are included.\n\n```{webr}\n#| setup: true\n#| exercise: ex_3\nlibrary(dplyr)\n```\n\n```{webr}\n#| exercise: ex_3\nstarwars |&gt; ______\n```\n\n::: { .hint exercise=\"ex_3\"}\n::: { .callout-note collapse=\"false\"}\n## Hint 1\n\nConsider using the `filter()` function from `dplyr`.\n\n```r\nstarwars |&gt; filter(______)\n```\n:::\n:::\n\n::: { .hint exercise=\"ex_3\"}\n::: { .callout-note collapse=\"false\"}\n## Hint 2\n\nYou should filter the dataset using the `species` column.\n\n```r\nstarwars |&gt; filter(species == ______)\n```\n:::\n:::\n\n::: { .solution exercise=\"ex_3\" }\n::: { .callout-tip collapse=\"false\"}\n## Fully worked solution:\n\nUse the `filter()` function from `dplyr`:\n\n```r\nstarwars |&gt;                                 #&lt;1&gt;\n    filter(species == \"Droid\")              #&lt;2&gt;\n```\n1. Take the `starwars` dataset, and then,\n2. Filter for the \"Droid\" species.\n\n:::\n:::\n\n\n\nOutput\nFilter the starwars dataset so that only the droid characters are included.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNoteHint 1\n\n\n\n\n\nConsider using the filter() function from dplyr.\nstarwars |&gt; filter(______)\n\n\n\n\n\n\n\n\n\n\n\nNoteHint 2\n\n\n\n\n\nYou should filter the dataset using the species column.\nstarwars |&gt; filter(species == ______)\n\n\n\n\n\n\n\n\n\n\n\nTipFully worked solution:\n\n\n\n\n\nUse the filter() function from dplyr:\n1starwars |&gt;\n2    filter(species == \"Droid\")\n\n1\n\nTake the starwars dataset, and then,\n\n2\n\nFilter for the “Droid” species.",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/exercises.html#tabset-exercises",
+    "href": "exercises/exercises.html#tabset-exercises",
+    "title": "Creating Exercises",
+    "section": "Tabset exercises",
+    "text": "Tabset exercises\nYou may prefer to show exercise hints and solutions in the form of a tabbed panel. This can be achieved by wrapping your fenced .hint and .solution blocks as part of a tabset panel block.\n\n\nSource\n\n\n\nexercise.qmd\n\n:::: {.panel-tabset}\n\n## Exercise\n\n```{webr}\n#| setup: true\n#| exercise: ex_4\nlibrary(dplyr)\n```\n\n```{webr}\n#| exercise: ex_4\nstarwars |&gt; ______\n```\n\n## Hints\n\n::: { .hint exercise=\"ex_4\"}\nConsider using the `filter()` function from `dplyr`.\n\n```r\nstarwars |&gt; filter(______)\n```\n:::\n\n## Solution\n\n::: { .solution exercise=\"ex_4\" }\nUse the `filter()` function from `dplyr`:\n\n```r\nstarwars |&gt;                                 #&lt;1&gt;\n    filter(species == \"Droid\")              #&lt;2&gt;\n```\n1. Take the `starwars` dataset, and then,\n2. Filter for the \"Droid\" species.\n:::\n\n::::\n\n\n\nOutput\n\nExerciseHintsSolution\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConsider using the filter() function from dplyr.\nstarwars |&gt; filter(______)\n\n\n\n\nUse the filter() function from dplyr:\n1starwars |&gt;\n2    filter(species == \"Droid\")\n\n1\n\nTake the starwars dataset, and then,\n\n2\n\nFilter for the “Droid” species.",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/exercises.html#document-level-options",
+    "href": "exercises/exercises.html#document-level-options",
+    "title": "Creating Exercises",
+    "section": "Document level options",
+    "text": "Document level options\nEnable and disable hints and solutions for an entire document using the live key in the document YAML header.\n---\nlive:\n  show-hints: true\n  show-solutions: true\n---",
+    "crumbs": [
+      "Exercises and Grading",
+      "Creating Exercises"
+    ]
+  },
+  {
+    "objectID": "exercises/environments.html",
+    "href": "exercises/environments.html",
+    "title": "Managing Environments",
+    "section": "",
+    "text": "For a standard (non-exercise) interactive code block, the default environment label is \"global\", meaning “the global environment”. That means that variables put into the environment in one executable code block can be accessed in by blocks that are subsequently evaluated.\n\n\nSource\n\n```{webr}\n# Assignment in non-exercise blocks is in the global environment\nfoo &lt;- c(1, 3, 5, 7)\n```\n\n```{webr}\n# So, non-exercise blocks can share variables\nfoo + 42\n```",
+    "crumbs": [
+      "Exercises and Grading",
+      "Managing Environments"
+    ]
+  },
+  {
+    "objectID": "exercises/environments.html#environments-in-interactive-code-blocks",
+    "href": "exercises/environments.html#environments-in-interactive-code-blocks",
+    "title": "Managing Environments",
+    "section": "",
+    "text": "For a standard (non-exercise) interactive code block, the default environment label is \"global\", meaning “the global environment”. That means that variables put into the environment in one executable code block can be accessed in by blocks that are subsequently evaluated.\n\n\nSource\n\n```{webr}\n# Assignment in non-exercise blocks is in the global environment\nfoo &lt;- c(1, 3, 5, 7)\n```\n\n```{webr}\n# So, non-exercise blocks can share variables\nfoo + 42\n```",
+    "crumbs": [
+      "Exercises and Grading",
+      "Managing Environments"
+    ]
+  },
+  {
+    "objectID": "exercises/environments.html#exercise-environments",
+    "href": "exercises/environments.html#exercise-environments",
+    "title": "Managing Environments",
+    "section": "Exercise environments",
+    "text": "Exercise environments\nOn the other hand, we often want to ensure that exercises do not interfere with one another. As such, each exercise is given a unique environment for evaluation. Exercises can access variables defined in the global environment, but not the other way around.\n\n\nSource\n\n```{webr}\n#| exercise: ex_1\n#| setup: true\n# Assignment in setup blocks are put into the exercise environment\nbar &lt;- c(2, 4, 6, 8)\n```\n\n```{webr}\n#| exercise: ex_1\n#| autorun: true\n# Exercises variables in both their own and the global environment\nfoo\nbar\n```\n\n```{webr}\n# Evaluation in the global environment cannot see variables\n# defined in exercise environments\nbar\n```",
+    "crumbs": [
+      "Exercises and Grading",
+      "Managing Environments"
+    ]
+  },
+  {
+    "objectID": "exercises/environments.html#manually-managing-the-environment",
+    "href": "exercises/environments.html#manually-managing-the-environment",
+    "title": "Managing Environments",
+    "section": "Manually managing the environment",
+    "text": "Manually managing the environment\nEnvironments can be managed manually, if you wish, by setting the envir cell option to a shared label. Exercises sharing the same environment label are all executed in the same environment. This can be used to create “follow-on” exercises.\n\n\nSource\n\n```{webr}\n#| envir: myenv\n#| exercise: ex_shared_1\n#| autorun: true\nabc &lt;- 7\n```\n\n```{webr}\n#| envir: myenv\n#| exercise: ex_shared_2\n#| autorun: true\nxyz &lt;- 5\n```\n\n```{webr}\n#| envir: myenv\n#| exercise: ex_shared_3\n#| autorun: true\nabc + xyz\n```\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExample: Shared environments with grading\n\n\nSource\n\n```{webr}\n#| setup: true\n#| exercise: ex_shared_1a\ndataset &lt;- data.frame(foo = c(1,2,3), bar = c(10,100,1000))\nmy_mean &lt;- NULL\n```\n\n#### Exercise 1a\n\nThe `dataset` variable has been created in a `setup: true` block.\n\nCalculate the mean of the `foo` column in `dataset`. Save the result as `my_mean`.\n\n```{webr}\n#| envir: myenv\n#| exercise: ex_shared_1a\nmy_mean &lt;- ______(dataset$foo)\n```\n\n```{webr}\n#| check: true\n#| exercise: ex_shared_1a\nif (identical(my_mean, mean(dataset$foo))) {\n  list(correct = TRUE, message = \"Nice work!\")\n} else {\n  list(correct = FALSE, message = \"That's incorrect, sorry.\")\n}\n```\n\n#### Exercise 1b\n\nThe `dataset` variable is also accessible from this exercise, because both exercises have the `envir: myenv` option set.\n\nCalculate the standard deviation of the `bar` column in `dataset`.\n\n```{webr}\n#| exercise: ex_shared_1b\n#| envir: myenv\nsd(______)\n```\n\n```{webr}\n#| check: true\n#| exercise: ex_shared_1b\nif (identical(.result, sd(dataset$bar))) {\n  list(correct = TRUE, message = \"Nice work!\")\n} else {\n  list(correct = FALSE, message = \"That's incorrect, sorry.\")\n}\n```\n\n\n\n\n\nExercise 1a\nThe dataset variable has been created in a setup: true block.\nCalculate the mean of the foo column in dataset. Save the result as my_mean.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExercise 1b\nThe dataset variable is also accessible from this exercise, because both exercises have the envir: myenv option set.\nCalculate the standard deviation of the bar column in dataset.",
+    "crumbs": [
+      "Exercises and Grading",
+      "Managing Environments"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html",
+    "href": "sql-environments-test.html",
+    "title": "SQL Environment Test",
+    "section": "",
+    "text": "A normal SQL block without exercise uses the default environment global.\nThis means that one SQL block can create tables, and later SQL blocks can use the same tables again. In this first block, we create two global tables: foo and bar.\n\n\n\n\n\n\nThe next SQL block can access foo, because it was created in the global environment above.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#environments-in-interactive-sql-blocks",
+    "href": "sql-environments-test.html#environments-in-interactive-sql-blocks",
+    "title": "SQL Environment Test",
+    "section": "",
+    "text": "A normal SQL block without exercise uses the default environment global.\nThis means that one SQL block can create tables, and later SQL blocks can use the same tables again. In this first block, we create two global tables: foo and bar.\n\n\n\n\n\n\nThe next SQL block can access foo, because it was created in the global environment above.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#exercise-environments",
+    "href": "sql-environments-test.html#exercise-environments",
+    "title": "SQL Environment Test",
+    "section": "Exercise environments",
+    "text": "Exercise environments\nSQL exercises use their own exercise environment by default. This helps to keep exercises separate from each other.\nThe setup block creates the start state for the exercise.\n\nThe learner code runs in the exercise environment. It can access the table from the setup block.\n\n\n\n\n\n\nThe check block is linked to the same exercise. It checks if the table has exactly two rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#exercise-isolation-from-global",
+    "href": "sql-environments-test.html#exercise-isolation-from-global",
+    "title": "SQL Environment Test",
+    "section": "Exercise isolation from global",
+    "text": "Exercise isolation from global\nNormal SQL blocks and exercise SQL blocks should not always share the same state.\nThe table people was created in the global environment. This exercise uses its own exercise environment, so it should not see people.\n\n\n\n\n\n\nExpected result: this block should show an error, because people does not exist inside this exercise environment.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#manually-managing-the-environment",
+    "href": "sql-environments-test.html#manually-managing-the-environment",
+    "title": "SQL Environment Test",
+    "section": "Manually managing the environment",
+    "text": "Manually managing the environment\nSometimes exercises should build on each other. Quarto Live supports this with the envir option.\nExercises with the same manual envir value share the same environment. This can be used for follow-on exercises.\n\nFollow-on exercise 1\nThis exercise creates a table and inserts one value.\n\n\n\n\n\n\n\n\nFollow-on exercise 2\nThis exercise uses the same environment myenv. It can access the table from the previous exercise and insert another value.\n\n\n\n\n\n\n\n\nFollow-on exercise 3\nThis exercise also uses myenv. It can see both inserted values and calculate their sum.\n\n\n\n\n\n\nExpected result: the total should be 12.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#shared-environments-with-grading",
+    "href": "sql-environments-test.html#shared-environments-with-grading",
+    "title": "SQL Environment Test",
+    "section": "Shared environments with grading",
+    "text": "Shared environments with grading\nThis section tests whether a shared SQL environment can also be used together with checks.\nThe setup block creates a small dataset.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#reusing-global-tables-later",
+    "href": "sql-environments-test.html#reusing-global-tables-later",
+    "title": "SQL Environment Test",
+    "section": "Reusing global tables later",
+    "text": "Reusing global tables later\nThe tables foo and bar were created at the beginning of this document in the global SQL environment.\nThis later block can still access them, because normal SQL blocks without exercise share the same default environment global.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html",
+    "href": "sql-grading-test.html",
+    "title": "SQL Grading Test",
+    "section": "",
+    "text": "This document tests SQL-specific grading behavior for Quarto Live. The focus is on setup execution, checks after user code, positive and negative grading results, SQL error handling, and shared environments.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#sql-grading-test",
+    "href": "sql-grading-test.html#sql-grading-test",
+    "title": "SQL Grading Test",
+    "section": "",
+    "text": "This document tests SQL-specific grading behavior for Quarto Live. The focus is on setup execution, checks after user code, positive and negative grading results, SQL error handling, and shared environments.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-1-correct-solution-passes-check",
+    "href": "sql-grading-test.html#test-1-correct-solution-passes-check",
+    "title": "SQL Grading Test",
+    "section": "Test 1: Correct solution passes check",
+    "text": "Test 1: Correct solution passes check\nThis test verifies that setup code creates the initial table, the exercise modifies the database state, and the check evaluates the resulting state.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the table contains exactly three rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-2-incorrect-solution-fails-check",
+    "href": "sql-grading-test.html#test-2-incorrect-solution-fails-check",
+    "title": "SQL Grading Test",
+    "section": "Test 2: Incorrect solution fails check",
+    "text": "Test 2: Incorrect solution fails check\nThis test verifies that an incorrect database state leads to negative grading feedback.\n\n\n\n\n\n\n\n\nExpected result: The check should fail, because the table contains only one row instead of three.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-3-check-validates-inserted-values",
+    "href": "sql-grading-test.html#test-3-check-validates-inserted-values",
+    "title": "SQL Grading Test",
+    "section": "Test 3: Check validates inserted values",
+    "text": "Test 3: Check validates inserted values\nThis test verifies that the check can evaluate not only the number of rows, but also the actual data inserted by the exercise.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the expected rows and values were inserted.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-4-sql-error-in-solution",
+    "href": "sql-grading-test.html#test-4-sql-error-in-solution",
+    "title": "SQL Grading Test",
+    "section": "Test 4: SQL error in solution",
+    "text": "Test 4: SQL error in solution\nThis test verifies that an error in the learner solution is detected and reported instead of producing uncaught browser errors.\n\n\n\n\n\n\n\n\nExpected result: The SQL execution should fail and the error should be shown as feedback.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-5-shared-environment-grading",
+    "href": "sql-grading-test.html#test-5-shared-environment-grading",
+    "title": "SQL Grading Test",
+    "section": "Test 5: Shared environment grading",
+    "text": "Test 5: Shared environment grading\nThis test verifies that checks can evaluate a database state created across multiple exercises in the same shared environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because both exercises use the same shared environment and the table contains two rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-6-shared-environment-negative-grading",
+    "href": "sql-grading-test.html#test-6-shared-environment-negative-grading",
+    "title": "SQL Grading Test",
+    "section": "Test 6: Shared environment negative grading",
+    "text": "Test 6: Shared environment negative grading\nThis test verifies that shared-environment grading also detects an incorrect state.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The check should fail, because the shared table contains two rows instead of three.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-7-check-returns-numeric-result",
+    "href": "sql-grading-test.html#test-7-check-returns-numeric-result",
+    "title": "SQL Grading Test",
+    "section": "Test 7: Check returns numeric result",
+    "text": "Test 7: Check returns numeric result\nThis test verifies that numeric check results can be interpreted as grading results. A non-zero value should be interpreted as a successful check.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the first result field is a non-zero numeric value.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-8-check-returns-text-result",
+    "href": "sql-grading-test.html#test-8-check-returns-text-result",
+    "title": "SQL Grading Test",
+    "section": "Test 8: Check returns text result",
+    "text": "Test 8: Check returns text result\nThis test verifies that textual check results such as ok can be interpreted as successful grading results.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the first result field contains ok.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-9-check-detects-missing-table",
+    "href": "sql-grading-test.html#test-9-check-detects-missing-table",
+    "title": "SQL Grading Test",
+    "section": "Test 9: Check detects missing table",
+    "text": "Test 9: Check detects missing table\nThis test verifies that checks fail when the expected database object was not created by the exercise.\n\n\n\n\n\n\n\n\nExpected result: The check should fail with an SQL error, because the expected table does not exist.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#sql-environment-test",
+    "href": "sql-test.html#sql-environment-test",
+    "title": "SQL Environment Test",
+    "section": "",
+    "text": "This document tests SQL execution, global environments, isolated exercise environments, shared environments, tabular output, error handling, and schema-aware autocomplete.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-1-global-sql-environment",
+    "href": "sql-test.html#test-1-global-sql-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 1: Global SQL environment",
+    "text": "Test 1: Global SQL environment\nThis test verifies that normal SQL blocks without an explicit exercise use the global environment. A table created in one normal SQL block should be available in a later normal SQL block.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second SQL block should display the two rows inserted in the first SQL block.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-2-tabular-output",
+    "href": "sql-test.html#test-2-tabular-output",
+    "title": "SQL Environment Test",
+    "section": "Test 2: Tabular output",
+    "text": "Test 2: Tabular output\nThis test verifies that SELECT results are rendered as a table with columns and rows.\n\n\n\n\n\n\nExpected result: The output should be displayed as a table with the columns id and name.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-3-isolated-exercise-environment",
+    "href": "sql-test.html#test-3-isolated-exercise-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 3: Isolated exercise environment",
+    "text": "Test 3: Isolated exercise environment\nThis test verifies that an exercise without a manually assigned envir receives its own exercise-specific database state.\n\n\n\n\n\n\n\n\nExpected result: The exercise should show three rows and the check should pass.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-4-isolation-from-global-environment",
+    "href": "sql-test.html#test-4-isolation-from-global-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 4: Isolation from global environment",
+    "text": "Test 4: Isolation from global environment\nThis test verifies that the isolated exercise environment does not accidentally use the global table from Test 1.\n\n\n\n\n\n\nExpected result: This exercise should not rely on the global exercise state. If the table is not available in the isolated environment, an SQL error is expected. This confirms that exercise environments are separated from the global environment.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-5-shared-environment-follow-on-exercise",
+    "href": "sql-test.html#test-5-shared-environment-follow-on-exercise",
+    "title": "SQL Environment Test",
+    "section": "Test 5: Shared environment / Follow-on exercise",
+    "text": "Test 5: Shared environment / Follow-on exercise\nThis test verifies that multiple exercises with the same envir value share one database state.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The shared environment should contain the rows inserted by the previous exercises. The last exercise should return 2.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-6-shared-environment-check",
+    "href": "sql-test.html#test-6-shared-environment-check",
+    "title": "SQL Environment Test",
+    "section": "Test 6: Shared environment check",
+    "text": "Test 6: Shared environment check\nThis test verifies that a check can evaluate the state of a shared environment.\n\nExpected result: The check should pass because the shared table contains two rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-7-sql-error-output",
+    "href": "sql-test.html#test-7-sql-error-output",
+    "title": "SQL Environment Test",
+    "section": "Test 7: SQL error output",
+    "text": "Test 7: SQL error output\nThis test verifies that SQL errors are shown as output feedback instead of uncaught browser errors.\n\n\n\n\n\n\nExpected result: The SQL error should be displayed in the output area.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-test.html#test-8-schema-aware-autocomplete",
+    "href": "sql-test.html#test-8-schema-aware-autocomplete",
+    "title": "SQL Environment Test",
+    "section": "Test 8: Schema-aware autocomplete",
+    "text": "Test 8: Schema-aware autocomplete\nThis test verifies that newly created tables and columns can be used for schema-aware autocomplete.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor should suggest the table autocomplete_test and its columns id, label, and amount during SQL input.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#test-explicit-autorun-option",
+    "href": "sql-environments-test.html#test-explicit-autorun-option",
+    "title": "SQL Environment Test",
+    "section": "Test: Explicit autorun option",
+    "text": "Test: Explicit autorun option\nThis test verifies that a SQL block with autorun: true is executed when the page is initialized.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second SQL block should display the row from autorun_explicit without manually executing the first block.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments-test.html#test-autorun-in-sql-exercise",
+    "href": "sql-environments-test.html#test-autorun-in-sql-exercise",
+    "title": "SQL Environment Test",
+    "section": "Test: Autorun in SQL Exercise",
+    "text": "Test: Autorun in SQL Exercise\nThis test verifies that an exercise SQL block with autorun: true is executed automatically when the page is initialized.\n\n\n\n\n\n\n\n\nExpected result: The exercise block should execute automatically after initialization, display the inserted row, and the check should pass without manually pressing the run button.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Test"
+    ]
+  },
+  {
+    "objectID": "sql-functional-test.html",
+    "href": "sql-functional-test.html",
+    "title": "SQL Functional Tests",
+    "section": "",
+    "text": "This document contains functional tests for the SQL extension. The tests correspond to the feature matrix and cover client-side execution, static delivery, normal SQL blocks, editor options, isolated exercises, shared environments, setup and grading, error feedback, schema-aware autocomplete, psql-style meta commands, meta-command autocomplete, and autorun.\nThe tests are intended to be executed in the rendered HTML document. Unless stated otherwise, editable SQL blocks should be executed manually with Run Code."
+  },
+  {
+    "objectID": "sql-functional-test.html#sql-functional-tests",
+    "href": "sql-functional-test.html#sql-functional-tests",
+    "title": "SQL Functional Tests",
+    "section": "",
+    "text": "This document contains functional tests for the SQL extension. The tests correspond to the feature matrix and cover client-side execution, static delivery, normal SQL blocks, editor options, isolated exercises, shared environments, setup and grading, error feedback, schema-aware autocomplete, psql-style meta commands, meta-command autocomplete, and autorun.\nThe tests are intended to be executed in the rendered HTML document. Unless stated otherwise, editable SQL blocks should be executed manually with Run Code."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-1-client-side-sql-execution-and-static-delivery",
+    "href": "sql-functional-test.html#test-1-client-side-sql-execution-and-static-delivery",
+    "title": "SQL Functional Tests",
+    "section": "Test 1: Client-side SQL execution and static delivery",
+    "text": "Test 1: Client-side SQL execution and static delivery\nThis test verifies that SQL statements can be executed in the browser through PGlite. The rendered HTML page is intended to be opened through a static local web server without an external SQL server.\n\nSource\n\n\nsql-functional-test.qmd\n\n```{sql}\nDROP TABLE IF EXISTS functional_people;\n\nCREATE TABLE functional_people (\n  id INTEGER,\n  name TEXT\n);\n\nINSERT INTO functional_people VALUES\n  (1, 'Ada'),\n  (2, 'Linus');\n```\n\n\n\n\n\n\n\n\n\nSource\n\n\nsql-functional-test.qmd\n\n```{sql}\n\nSELECT *\nFROM functional_people\nORDER BY id;\n```\n\n\n\n\n\n\n\nExpected result: After running the blocks in order, the second block displays two rows. The page can be rendered and executed through a static local web server without a Node, Quarto preview, or external SQL database server."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-2-normal-sql-blocks-global-state-tabular-output-and-before-all-behavior",
+    "href": "sql-functional-test.html#test-2-normal-sql-blocks-global-state-tabular-output-and-before-all-behavior",
+    "title": "SQL Functional Tests",
+    "section": "Test 2: Normal SQL blocks, global state, tabular output, and before-all behavior",
+    "text": "Test 2: Normal SQL blocks, global state, tabular output, and before-all behavior\nThis test verifies that normal SQL blocks share a global database state. A table created in one normal SQL block should be available in later normal SQL blocks. This also demonstrates that a normal SQL block can function as a document-wide preparation step comparable to a limited before-all mechanism when executed before later blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After running the blocks in order, the final SELECT output is displayed as a table with the columns id and value and contains three rows."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-3-isolated-exercises",
+    "href": "sql-functional-test.html#test-3-isolated-exercises",
+    "title": "SQL Functional Tests",
+    "section": "Test 3: Isolated exercises",
+    "text": "Test 3: Isolated exercises\nThis test verifies that SQL exercises without a shared envir use separate database states. Two exercises use the same table name but should not interfere with each other.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The first exercise contains two rows after execution. The second exercise contains only its own setup row. This shows that the exercises do not accidentally share the same database state."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-4-shared-environments",
+    "href": "sql-functional-test.html#test-4-shared-environments",
+    "title": "SQL Functional Tests",
+    "section": "Test 4: Shared environments",
+    "text": "Test 4: Shared environments\nThis test verifies that multiple exercises with the same envir option share one database state. The first exercise creates the table, and later exercises use and extend the same state.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After running the shared exercises in order, the shared environment contains both inserted rows. The check for shared_three passes because all exercises use the same envir."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-5-setup-grading-and-error-feedback",
+    "href": "sql-functional-test.html#test-5-setup-grading-and-error-feedback",
+    "title": "SQL Functional Tests",
+    "section": "Test 5: Setup, grading, and error feedback",
+    "text": "Test 5: Setup, grading, and error feedback\nThis test verifies that setup code prepares the exercise state, that check code evaluates the result, and that SQL errors are shown as feedback.\n\nTest 5.1: Correct grading result\n\n\n\n\n\n\n\n\nExpected result: The check passes because the table contains exactly three rows.\n\n\nTest 5.2: Negative grading result\n\n\n\n\n\n\n\n\nExpected result: The check fails because the table contains only one row instead of three.\n\n\nTest 5.3: SQL error feedback\n\n\n\n\n\n\n\n\nExpected result: The SQL error is displayed as feedback and does not produce an uncaught browser error."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-6-sql-editor-schema-aware-autocomplete-and-autorun",
+    "href": "sql-functional-test.html#test-6-sql-editor-schema-aware-autocomplete-and-autorun",
+    "title": "SQL Functional Tests",
+    "section": "Test 6: SQL editor, schema-aware autocomplete, and autorun",
+    "text": "Test 6: SQL editor, schema-aware autocomplete, and autorun\nThis test verifies editor-based SQL input, schema-aware autocomplete, and the Quarto Live editor option autorun.\n\nTest 6.1: Schema-aware autocomplete\nThis test verifies that the SQL editor can suggest table and column names from the current PGlite schema.\n\nSource\n\n\nsql-functional-test.qmd\n\n```{sql}\n#| exercise: editor_autocomplete\n#| setup: true\n\nDROP TABLE IF EXISTS autocomplete_items;\n\nCREATE TABLE autocomplete_items (\n  id INTEGER,\n  label TEXT,\n  amount INTEGER\n);\n\nINSERT INTO autocomplete_items VALUES\n  (1, 'first', 10),\n  (2, 'second', 20);\n```\n\n\n\n\n\n\n\n\n\nExpected result: The SQL editor should suggest the table autocomplete_items and the columns id, label, and amount. The query should return two rows and the check should pass.\n\n\n\nTest 6.2: Autorun in SQL editor\nThis test verifies that an editable SQL block with autorun: true is executed automatically when the editor is initialized.\n\nSource\n\n\nsql-functional-test.qmd\n\n```{sql}\n#| exercise: editor_autorun\n#| autorun: true\n\nINSERT INTO autorun_editor VALUES\n  (1, 'created by editor autorun');\n\nSELECT *\nFROM autorun_editor;\n```\n\n\n\n\n\n\n\n\n\nExpected result: The SQL block with autorun: true is executed automatically without pressing the run button. The output displays the inserted row and the check passes."
+  },
+  {
+    "objectID": "sql-grading-test.html#test-5.4-check-validates-inserted-values",
+    "href": "sql-grading-test.html#test-5.4-check-validates-inserted-values",
+    "title": "SQL Grading Test",
+    "section": "Test 5.4: Check validates inserted values",
+    "text": "Test 5.4: Check validates inserted values\nThis test verifies that the check can evaluate not only the number of rows, but also the actual data inserted by the exercise.\n\n\nsql-functional-test.qmd\n\n\n```{sql}\n#| exercise: grade_values_pass\n#| check: true\nSELECT\n COUNT(*) = 3\n AND SUM(price) = 75\n AND MAX(price) = 50\n AS passed\nFROM products;\n\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the expected rows and values were inserted.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-5.5-shared-environment-grading",
+    "href": "sql-grading-test.html#test-5.5-shared-environment-grading",
+    "title": "SQL Grading Test",
+    "section": "Test 5.5: Shared environment grading",
+    "text": "Test 5.5: Shared environment grading\nThis test verifies that checks can evaluate a database state created across multiple exercises in the same shared environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because both exercises use the same shared environment and the table contains two rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-5.6-check-returns-numeric-result",
+    "href": "sql-grading-test.html#test-5.6-check-returns-numeric-result",
+    "title": "SQL Grading Test",
+    "section": "Test 5.6: Check returns numeric result",
+    "text": "Test 5.6: Check returns numeric result\nThis test verifies that numeric check results can be interpreted as grading results. A non-zero value should be interpreted as a successful check.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the first result field is a non-zero numeric value.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-grading-test.html#test-5.7-check-returns-text-result",
+    "href": "sql-grading-test.html#test-5.7-check-returns-text-result",
+    "title": "SQL Grading Test",
+    "section": "Test 5.7: Check returns text result",
+    "text": "Test 5.7: Check returns text result\nThis test verifies that textual check results such as ok can be interpreted as successful grading results.\n\n\n\n\n\n\n\n\nExpected result: The check should pass, because the first result field contains ok.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-environments2-test.html",
+    "href": "sql-environments2-test.html",
+    "title": "SQL Environment Test",
+    "section": "",
+    "text": "This document tests SQL execution, global environments, isolated exercise environments, shared environments, tabular output, error handling, and schema-aware autocomplete."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-1-global-sql-environment",
+    "href": "sql-environments2-test.html#test-1-global-sql-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 1: Global SQL environment",
+    "text": "Test 1: Global SQL environment\nThis test verifies that normal SQL blocks without an explicit exercise use the global environment. A table created in one normal SQL block should be available in a later normal SQL block.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second SQL block should display the two rows inserted in the first SQL block."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-2-tabular-output",
+    "href": "sql-environments2-test.html#test-2-tabular-output",
+    "title": "SQL Environment Test",
+    "section": "Test 2: Tabular output",
+    "text": "Test 2: Tabular output\nThis test verifies that SELECT results are rendered as a table with columns and rows.\n\n\n\n\n\n\nExpected result: The output should be displayed as a table with the columns id and name."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-3-isolated-exercise-environment",
+    "href": "sql-environments2-test.html#test-3-isolated-exercise-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 3: Isolated exercise environment",
+    "text": "Test 3: Isolated exercise environment\nThis test verifies that an exercise without a manually assigned envir receives its own exercise-specific database state.\n\n\n\n\n\n\n\n\nExpected result: The exercise should show three rows and the check should pass."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-4-isolation-from-global-environment",
+    "href": "sql-environments2-test.html#test-4-isolation-from-global-environment",
+    "title": "SQL Environment Test",
+    "section": "Test 4: Isolation from global environment",
+    "text": "Test 4: Isolation from global environment\nThis test verifies that the isolated exercise environment does not accidentally use the global table from Test 1.\n\n\n\n\n\n\nExpected result: This exercise should not rely on the global exercise state. If the table is not available in the isolated environment, an SQL error is expected. This confirms that exercise environments are separated from the global environment."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-5-shared-environment-follow-on-exercise",
+    "href": "sql-environments2-test.html#test-5-shared-environment-follow-on-exercise",
+    "title": "SQL Environment Test",
+    "section": "Test 5: Shared environment / Follow-on exercise",
+    "text": "Test 5: Shared environment / Follow-on exercise\nThis test verifies that multiple exercises with the same envir value share one database state.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The shared environment should contain the rows inserted by the previous exercises. The last exercise should return 2."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-6-shared-environment-check",
+    "href": "sql-environments2-test.html#test-6-shared-environment-check",
+    "title": "SQL Environment Test",
+    "section": "Test 6: Shared environment check",
+    "text": "Test 6: Shared environment check\nThis test verifies that a check can evaluate the state of a shared environment.\n\nExpected result: The check should pass because the shared table contains two rows."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-7-sql-error-output",
+    "href": "sql-environments2-test.html#test-7-sql-error-output",
+    "title": "SQL Environment Test",
+    "section": "Test 7: SQL error output",
+    "text": "Test 7: SQL error output\nThis test verifies that SQL errors are shown as output feedback instead of uncaught browser errors.\n\n\n\n\n\n\nExpected result: The SQL error should be displayed in the output area."
+  },
+  {
+    "objectID": "sql-environments2-test.html#test-8-schema-aware-autocomplete",
+    "href": "sql-environments2-test.html#test-8-schema-aware-autocomplete",
+    "title": "SQL Environment Test",
+    "section": "Test 8: Schema-aware autocomplete",
+    "text": "Test 8: Schema-aware autocomplete\nThis test verifies that newly created tables and columns can be used for schema-aware autocomplete.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor should suggest the table autocomplete_test and its columns id, label, and amount during SQL input."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-7-editor-option-combinations",
+    "href": "sql-functional-test.html#test-7-editor-option-combinations",
+    "title": "SQL Functional Tests",
+    "section": "Test 7: Editor option combinations",
+    "text": "Test 7: Editor option combinations\nThis test verifies the interaction between edit and autorun. The options affect different aspects of execution: edit controls whether an editor is shown, while autorun controls whether an editable block is executed automatically during initialization.\n\nTest 7.1: edit: true, autorun: false\nThis test verifies the default interactive editor behavior. The editor should be visible, but the SQL code should not be executed until Run Code is pressed.\n\n\n\n\n\n\nExpected result: An editor is displayed. No result should be shown until Run Code is pressed. After execution, the output contains the value manual editor execution.\n\n\nTest 7.2: edit: true, autorun: true\nThis test verifies automatic execution of an editable non-exercise SQL block.\n\n\n\n\n\n\nExpected result: An editor is displayed and the SQL code is executed automatically during initialization. The output contains the value automatic editor execution without pressing Run Code.\n\n\nTest 7.3: edit: false, autorun: false\nThis test verifies non-editable SQL block behavior. Since the block is not editable, no editor should be shown. The block should be evaluated directly.\n\n\n\n\n\n\nExpected result: No editor is displayed. The output is shown directly and contains the value direct evaluation without editor.\n\n\nTest 7.4: edit: false, autorun: true\nThis test verifies that edit: false selects the non-interactive evaluation path. In this case, autorun is not the relevant trigger because no editor is created.\n\n\n\n\n\n\nExpected result: No editor is displayed. The block is evaluated directly. The result contains the value direct evaluation ignores editor autorun."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-8-psql-style-meta-commands",
+    "href": "sql-functional-test.html#test-8-psql-style-meta-commands",
+    "title": "SQL Functional Tests",
+    "section": "Test 8: Psql-style meta commands",
+    "text": "Test 8: Psql-style meta commands\nThis test verifies that psql-style meta commands are recognized by the SQL evaluator and executed through the current PGlite environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The command \\? displays help output. The command \\dt lists the table students. The command \\d students displays information about the columns of the table. The command \\du is recognized as a supported meta command and returns the role information available in the current PGlite environment."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-9-meta-commands-and-environments",
+    "href": "sql-functional-test.html#test-9-meta-commands-and-environments",
+    "title": "SQL Functional Tests",
+    "section": "Test 9: Meta commands and environments",
+    "text": "Test 9: Meta commands and environments\nThis test verifies that meta commands use the same environment as regular SQL statements.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The block with envir: meta_shared can describe the table meta_students, because the table was created in the same shared environment. The block without the shared envir does not see that table, because it uses a different exercise environment."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-10-meta-command-autocomplete",
+    "href": "sql-functional-test.html#test-10-meta-command-autocomplete",
+    "title": "SQL Functional Tests",
+    "section": "Test 10: Meta-command autocomplete",
+    "text": "Test 10: Meta-command autocomplete\nThis test verifies that the SQL editor suggests supported psql-style meta commands.\n\n\n\n\n\n\nExpected result: When typing \\ or \\d in the SQL editor, the editor suggests supported meta commands such as \\dt, \\du, and \\d. Executing \\dt runs the meta command through the SQL evaluator."
+  },
+  {
+    "objectID": "sql-functional-test.html#test-11-meta-commands-as-standalone-input",
+    "href": "sql-functional-test.html#test-11-meta-commands-as-standalone-input",
+    "title": "SQL Functional Tests",
+    "section": "Test 11: Meta commands as standalone input",
+    "text": "Test 11: Meta commands as standalone input\nThis test documents the expected boundary of psql-style meta commands. Meta commands are treated as standalone inputs and should not be mixed with SQL statements in the same block.\n\n\n\n\n\n\nExpected result: Regular SQL executes normally. Meta commands such as \\dt should be used as separate editor input, not mixed with SQL statements in the same block."
+  },
+  {
+    "objectID": "sql-grading-test.html#test-10-user-code-check-context",
+    "href": "sql-grading-test.html#test-10-user-code-check-context",
+    "title": "SQL Grading Test",
+    "section": "Test 10: User-code check context",
+    "text": "Test 10: User-code check context\nThis test verifies that the SQL check can inspect the submitted user code through the internal check context.\n\n\n\n\n\n\n\n\nExpected result: The check passes because the executed user code contains GROUP BY.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Test"
+    ]
+  },
+  {
+    "objectID": "sql-func-test.html",
+    "href": "sql-func-test.html",
+    "title": "SQL Functional Tests",
+    "section": "",
+    "text": "This test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.\n\n\nThis test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second block displays two rows with the values inserted in the first block.\n\n\n\n\nThis test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.\n\n\n\n\n\n\nExpected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.\n\n\n\n\nThis test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.\n\n\n\n\n\n\nExpected result: The block executes all four statements. The output shows the three inserted rows as a table.\n\n\n\n\nThis test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.\n\n\n\n\n\n\nExpected result: The error message relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The rest of the page remains functional."
+  },
+  {
+    "objectID": "sql-func-test.html#test-1-client-side-sql-execution-and-static-delivery",
+    "href": "sql-func-test.html#test-1-client-side-sql-execution-and-static-delivery",
+    "title": "SQL Functional Tests",
+    "section": "",
+    "text": "This test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.\n\n\nThis test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second block displays two rows with the values inserted in the first block.\n\n\n\n\nThis test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.\n\n\n\n\n\n\nExpected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.\n\n\n\n\nThis test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.\n\n\n\n\n\n\nExpected result: The block executes all four statements. The output shows the three inserted rows as a table.\n\n\n\n\nThis test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.\n\n\n\n\n\n\nExpected result: The error message relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The rest of the page remains functional."
+  },
+  {
+    "objectID": "sql-func-test.html#test-1-client-side-sql-execution-and-static-delivery-1",
+    "href": "sql-func-test.html#test-1-client-side-sql-execution-and-static-delivery-1",
+    "title": "SQL Functional Tests",
+    "section": "Test 1: Client-side SQL execution and static delivery",
+    "text": "Test 1: Client-side SQL execution and static delivery\nThis test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.\n\nTest 1.1: Basic execution across multiple blocks\nThis test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second block displays two rows with the values inserted in the first block.\n\n\n\nTest 1.2: PostgreSQL type enforcement\nThis test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.\n\n\n\n\n\n\nExpected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.\n\n\n\nTest 1.3: Multiple statements in one block\nThis test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.\n\n\n\n\n\n\nExpected result: The block executes all four statements. The output shows the three inserted rows as a table.\n\n\n\nTest 1.4: SQL error does not crash the page\nThis test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.\n\n\n\n\n\n\nExpected result: The error message relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The rest of the page remains functional."
+  },
+  {
+    "objectID": "sql-test-execution.html",
+    "href": "sql-test-execution.html",
+    "title": "SQL Functional Tests - Execution",
+    "section": "",
+    "text": "This test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.\n\n\nThis test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second block displays two rows with the values inserted in the first block.\n\n\n\n\nThis test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.\n\n\n\n\n\n\nExpected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.\n\n\n\n\nThis test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.\n\n\n\n\n\n\nExpected result: The block executes all four statements. The output shows the three inserted rows as a table.\n\n\n\n\nThis test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.\n\n\n\n\n\n\nExpected result: The error message relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The rest of the page remains functional.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Functional Tests - Execution"
+    ]
+  },
+  {
+    "objectID": "sql-test-execution.html#test-1-client-side-sql-execution-and-static-delivery",
+    "href": "sql-test-execution.html#test-1-client-side-sql-execution-and-static-delivery",
+    "title": "SQL Functional Tests - Execution",
+    "section": "",
+    "text": "This test verifies that SQL statements are executed client-side through PGlite in the browser, without an external SQL server. It covers basic execution, PostgreSQL type enforcement, multi-statement blocks, and error handling.\n\n\nThis test verifies that a table created in one block is accessible in a later block, confirming that the global database state persists across normal SQL blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The second block displays two rows with the values inserted in the first block.\n\n\n\n\nThis test verifies that PGlite enforces PostgreSQL column types strictly. Inserting a string into an INTEGER column should produce a type error, confirming that PGlite behaves like PostgreSQL and not like SQLite, which accepts such inserts silently.\n\n\n\n\n\n\nExpected result: The block produces a type error. The error is displayed as feedback in the document and does not cause an uncaught browser crash.\n\n\n\n\nThis test verifies that a single SQL block can contain multiple statements. PGlite executes all statements sequentially, and the last statement with rows is shown as output.\n\n\n\n\n\n\nExpected result: The block executes all four statements. The output shows the three inserted rows as a table.\n\n\n\n\nThis test verifies that a malformed SQL statement is caught by the evaluator and shown as feedback, without causing an uncaught JavaScript error or crashing the page.\n\n\n\n\n\n\nExpected result: The error message relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The rest of the page remains functional.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Functional Tests - Execution"
+    ]
+  },
+  {
+    "objectID": "sql-test-execution.html#test-2-global-state-isolation-and-tabular-output",
+    "href": "sql-test-execution.html#test-2-global-state-isolation-and-tabular-output",
+    "title": "SQL Functional Tests - Execution",
+    "section": "Test 2: Global state isolation and tabular output",
+    "text": "Test 2: Global state isolation and tabular output\nThis test verifies that the global database state is isolated from exercise environments, and that tabular output correctly renders different PostgreSQL data types.\n\nTest 2.1: Global state is isolated from exercise environments\nThis test verifies that a table created in a normal SQL block is not accessible inside an exercise with its own environment, and that a table created inside an exercise does not leak into the global state.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access exercise_only but not global_only. The global block can access global_only. The check passes because global_only is not visible inside the exercise environment.\n\n\n\nTest 2.2: Tabular output with multiple PostgreSQL data types\nThis test verifies that the tabular output correctly renders different PostgreSQL data types including INTEGER, TEXT, BOOLEAN, and NUMERIC.\n\n\n\n\n\n\nExpected result: The output table shows three rows with all four columns correctly rendered. Boolean values appear as true or false, and numeric values show two decimal places.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Functional Tests - Execution"
+    ]
+  },
+  {
+    "objectID": "test.html",
+    "href": "test.html",
+    "title": "Quarto Live Documentation",
+    "section": "",
+    "text": "#| edit: false\nDROP TABLE IF EXISTS global_numbers;\n\nCREATE TABLE global_numbers (\n  id INTEGER,\n  value INTEGER\n);\n\nINSERT INTO global_numbers VALUES\n  (1, 10),\n  (2, 20);\nINSERT INTO global_numbers VALUES (3, 30);\nSELECT\n  id,\n  value\nFROM global_numbers\nORDER BY id;"
+  },
+  {
+    "objectID": "sql-test-exercise.html",
+    "href": "sql-test-exercise.html",
+    "title": "SQL Exercise Tests",
+    "section": "",
+    "text": "This document tests SQL exercise behavior including setup code execution, isolation from the global environment, shared setup across multiple exercises, and the Start Over functionality."
+  },
+  {
+    "objectID": "sql-test-exercise.html#sql-exercise-tests",
+    "href": "sql-test-exercise.html#sql-exercise-tests",
+    "title": "SQL Exercise Tests",
+    "section": "",
+    "text": "This document tests SQL exercise behavior including setup code execution, isolation from the global environment, shared setup across multiple exercises, and the Start Over functionality."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-1-basic-exercise-with-setup",
+    "href": "sql-test-exercise.html#test-1-basic-exercise-with-setup",
+    "title": "SQL Exercise Tests",
+    "section": "Test 1: Basic exercise with setup",
+    "text": "Test 1: Basic exercise with setup\nThis test verifies that setup code is executed before the learner’s code, and that the learner can access tables created in the setup block.\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access the products table created in the setup block. The check passes because the table contains exactly three rows."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-2-exercise-can-access-global-tables",
+    "href": "sql-test-exercise.html#test-2-exercise-can-access-global-tables",
+    "title": "SQL Exercise Tests",
+    "section": "Test 2: Exercise can access global tables",
+    "text": "Test 2: Exercise can access global tables\nThis test verifies that an exercise can access tables created in the global environment, as documented in the Quarto Live environment model.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access the global_ref table created in a normal global SQL block. The check passes because the table is visible from within the exercise environment."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-3-global-environment-cannot-access-exercise-tables",
+    "href": "sql-test-exercise.html#test-3-global-environment-cannot-access-exercise-tables",
+    "title": "SQL Exercise Tests",
+    "section": "Test 3: Global environment cannot access exercise tables",
+    "text": "Test 3: Global environment cannot access exercise tables\nThis test verifies that tables created inside an exercise environment are not visible in the global environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access exercise_private. The global block produces the error relation \"exercise_private\" does not exist, confirming that exercise environments are isolated from the global state."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-4-shared-setup-for-multiple-exercises",
+    "href": "sql-test-exercise.html#test-4-shared-setup-for-multiple-exercises",
+    "title": "SQL Exercise Tests",
+    "section": "Test 4: Shared setup for multiple exercises",
+    "text": "Test 4: Shared setup for multiple exercises\nThis test verifies that a single setup block can be shared across multiple exercises by providing a list of exercise labels.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: Both exercises can access shared_data from the shared setup block. Both checks pass."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-5-start-over-resets-state-and-replays-setup",
+    "href": "sql-test-exercise.html#test-5-start-over-resets-state-and-replays-setup",
+    "title": "SQL Exercise Tests",
+    "section": "Test 5: Start Over resets state and replays setup",
+    "text": "Test 5: Start Over resets state and replays setup\nThis test verifies that clicking Start Over resets the editor content to the original code and replays the setup block, restoring the exercise to its initial state.\n\n\n\n\n\n\n\n\nExpected result: After running the exercise block, the table contains two rows and the check passes. After clicking Start Over, the editor resets to the original code and the setup is replayed. Running the block again should again produce two rows, confirming that the state was cleanly reset."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-2-sql-exercises-are-fully-isolated-from-the-global-database",
+    "href": "sql-test-exercise.html#test-2-sql-exercises-are-fully-isolated-from-the-global-database",
+    "title": "SQL Exercise Tests",
+    "section": "Test 2: SQL exercises are fully isolated from the global database",
+    "text": "Test 2: SQL exercises are fully isolated from the global database\nThis test verifies that SQL exercises cannot access tables created in normal global SQL blocks. Unlike WebR and Python exercises, each SQL exercise uses its own dedicated PGlite instance. This means that global SQL blocks and exercise blocks do not share the same database state, even when given the same envir label.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The exercise block produces the error relation \"global_ref\" does not exist. This confirms that SQL exercises are fully isolated from the global database state. The correct way to prepare data for an exercise is to use a setup: true block, not a global SQL block."
+  },
+  {
+    "objectID": "sql-test-exercise.html#test-3-setup-block-is-the-correct-way-to-share-data-with-exercises",
+    "href": "sql-test-exercise.html#test-3-setup-block-is-the-correct-way-to-share-data-with-exercises",
+    "title": "SQL Exercise Tests",
+    "section": "Test 3: Setup block is the correct way to share data with exercises",
+    "text": "Test 3: Setup block is the correct way to share data with exercises\nThis test verifies that a setup: true block is executed inside the exercise’s own PGlite instance and is therefore the correct mechanism for preparing data that exercises can access.\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access setup_ref because it was created inside the exercise’s own PGlite instance via the setup block. The check passes. This contrasts with Test 2, where a global block could not be accessed from an exercise."
+  },
+  {
+    "objectID": "sql-test-environments.html",
+    "href": "sql-test-environments.html",
+    "title": "SQL Environment Tests",
+    "section": "",
+    "text": "This document tests isolated and shared SQL exercise environments, including interference prevention between exercises and the behavior of Start Over in shared environments.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-environments.html#sql-environment-tests",
+    "href": "sql-test-environments.html#sql-environment-tests",
+    "title": "SQL Environment Tests",
+    "section": "",
+    "text": "This document tests isolated and shared SQL exercise environments, including interference prevention between exercises and the behavior of Start Over in shared environments."
+  },
+  {
+    "objectID": "sql-test-environments.html#test-1-isolated-exercises-do-not-interfere-with-each-other",
+    "href": "sql-test-environments.html#test-1-isolated-exercises-do-not-interfere-with-each-other",
+    "title": "SQL Environment Tests",
+    "section": "Test 1: Isolated exercises do not interfere with each other",
+    "text": "Test 1: Isolated exercises do not interfere with each other\nThis test verifies that two exercises using the same table name do not interfere with each other. Each exercise without an explicit envir gets its own dedicated PGlite instance.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The first exercise contains two rows after execution. The second exercise contains only its own setup row. This confirms that both exercises use separate PGlite instances and do not share state, even when using the same table name.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-environments.html#test-2-shared-environment-across-multiple-exercises",
+    "href": "sql-test-environments.html#test-2-shared-environment-across-multiple-exercises",
+    "title": "SQL Environment Tests",
+    "section": "Test 2: Shared environment across multiple exercises",
+    "text": "Test 2: Shared environment across multiple exercises\nThis test verifies that multiple exercises with the same envir label share a single PGlite instance. Changes made in one exercise are visible in later exercises with the same envir.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After running both exercises in order, the shared table contains three rows. The second exercise can access rows inserted by the first exercise, confirming that both exercises share the same PGlite instance via the envir label.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-environments.html#test-3-start-over-in-a-shared-environment",
+    "href": "sql-test-environments.html#test-3-start-over-in-a-shared-environment",
+    "title": "SQL Environment Tests",
+    "section": "Test 3: Start Over in a shared environment",
+    "text": "Test 3: Start Over in a shared environment\nThis test verifies the behavior of Start Over when exercises share an environment. Clicking Start Over on one exercise should reset that exercise’s editor content and replay its setup, but the shared environment state may be affected.\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After running both exercises, ex_start_shared_b shows two rows. After clicking Start Over on ex_start_shared_a and running it again, observe whether ex_start_shared_b still sees the previously inserted row or whether the shared state was affected. This documents the behavior of Start Over in shared environments.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Environment Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html",
+    "href": "sql-test-grading.html",
+    "title": "SQL Grading Tests",
+    "section": "",
+    "text": "This document tests the grading and check logic of SQL exercises, including correct and incorrect grading results, error feedback, value validation, and the behavior of __quarto_check_context in various scenarios.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#sql-grading-tests",
+    "href": "sql-test-grading.html#sql-grading-tests",
+    "title": "SQL Grading Tests",
+    "section": "",
+    "text": "This document tests the grading and check logic of SQL exercises, including correct and incorrect grading results, error feedback, value validation, and the behavior of __quarto_check_context in various scenarios."
+  },
+  {
+    "objectID": "sql-test-grading.html#test-1-correct-grading-result",
+    "href": "sql-test-grading.html#test-1-correct-grading-result",
+    "title": "SQL Grading Tests",
+    "section": "Test 1: Correct grading result",
+    "text": "Test 1: Correct grading result\nThis test verifies that a check returns a correct grading result when the exercise solution meets the expected conditions.\n\n\n\n\n\n\n\n\nExpected result: The check passes because the table contains exactly three rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#test-2-negative-grading-result",
+    "href": "sql-test-grading.html#test-2-negative-grading-result",
+    "title": "SQL Grading Tests",
+    "section": "Test 2: Negative grading result",
+    "text": "Test 2: Negative grading result\nThis test verifies that a check returns a negative grading result when the exercise solution does not meet the expected conditions.\n\n\n\n\n\n\n\n\nExpected result: The check fails because the table contains only one row instead of three.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#test-3-sql-error-as-feedback",
+    "href": "sql-test-grading.html#test-3-sql-error-as-feedback",
+    "title": "SQL Grading Tests",
+    "section": "Test 3: SQL error as feedback",
+    "text": "Test 3: SQL error as feedback\nThis test verifies that a SQL error in the exercise block is displayed as feedback and does not produce an uncaught browser error.\n\n\n\n\n\n\n\nExpected result: The error relation \"table_that_does_not_exist\" does not exist is displayed as feedback. The check is not executed because the exercise block produced an error.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#test-4-check-validates-inserted-values",
+    "href": "sql-test-grading.html#test-4-check-validates-inserted-values",
+    "title": "SQL Grading Tests",
+    "section": "Test 4: Check validates inserted values",
+    "text": "Test 4: Check validates inserted values\nThis test verifies that the check can evaluate not only the number of rows but also the actual data inserted by the exercise.\n\n\n\n\n\n\n\n\nExpected result: The check passes because the expected rows and values were inserted.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#test-5-__quarto_check_context-isolation",
+    "href": "sql-test-grading.html#test-5-__quarto_check_context-isolation",
+    "title": "SQL Grading Tests",
+    "section": "Test 5: __quarto_check_context isolation",
+    "text": "Test 5: __quarto_check_context isolation\nThis section tests the visibility and isolation of __quarto_check_context across different blocks and environments.\n\nTest 5.1: Exercise block cannot access __quarto_check_context\nThis test verifies that __quarto_check_context is not visible in the exercise block itself, only during check execution.\n\n\n\n\n\n\n\n\nExpected result: The exercise block produces the error relation \"__quarto_check_context\" does not exist. The check itself passes because it runs after the context table is created by the grader.\n\n\n\nTest 5.2: Another exercise in the same envir cannot access __quarto_check_context\nThis test verifies that __quarto_check_context created during one exercise’s check is not visible to another exercise sharing the same envir.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: ex_ctx_shared_b produces the error relation \"__quarto_check_context\" does not exist. This confirms that __quarto_check_context is only available during check execution and is not persistent in the shared environment.\n\n\n\nTest 5.3: Global block cannot access __quarto_check_context\nThis test verifies that __quarto_check_context is not visible in the global environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The global block produces the error relation \"__quarto_check_context\" does not exist. This confirms that __quarto_check_context is not visible outside of check execution.\n\n\n\nTest 5.4: Check code error behavior\nThis test verifies what happens when the check code itself produces a SQL error.\n\n\n\n\n\n\n\n\nExpected result: The check produces an error and displays it as negative feedback. The exercise block itself executed successfully.\n\n\n\n\nTest 5.5: user_code in __quarto_check_context reflects last execution\nThis test verifies that __quarto_check_context.user_code contains the SQL code from the most recent exercise execution.\n\n\n\n\n\n\n\n\nExpected result: The check passes because user_code contains the INSERT statement from the exercise block. This confirms that __quarto_check_context reflects the most recently executed exercise code.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-grading.html#test-6-custom-feedback-message-from-check",
+    "href": "sql-test-grading.html#test-6-custom-feedback-message-from-check",
+    "title": "SQL Grading Tests",
+    "section": "Test 6: Custom feedback message from check",
+    "text": "Test 6: Custom feedback message from check\nThis test verifies that when a check returns a string value that does not match any positive pattern, the string is displayed directly as feedback to the learner.\n\n\n\n\n\n\n\n\nExpected result: Since only one row was inserted, the check returns the string Insert exactly 3 rows into the table. which is displayed directly as feedback to the learner.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Grading Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html",
+    "href": "sql-test-editor.html",
+    "title": "SQL Editor Tests",
+    "section": "",
+    "text": "This document tests editor-related features of the SQL extension, including the edit and autorun options, schema-aware autocomplete, and autocomplete availability across different environments.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html#sql-editor-tests",
+    "href": "sql-test-editor.html#sql-editor-tests",
+    "title": "SQL Editor Tests",
+    "section": "",
+    "text": "This document tests editor-related features of the SQL extension, including the edit and autorun options, schema-aware autocomplete, and autocomplete availability across different environments."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-1-edit-false-no-editor-automatic-execution",
+    "href": "sql-test-editor.html#test-1-edit-false-no-editor-automatic-execution",
+    "title": "SQL Editor Tests",
+    "section": "Test 1: edit: false — no editor, automatic execution",
+    "text": "Test 1: edit: false — no editor, automatic execution\nThis test verifies that a SQL block with edit: false is executed automatically when the page loads, without displaying an editor to the user.\n\n\n\n\n\n\nExpected result: The block is executed automatically when the page loads. No editor is visible. The output table is displayed directly below the block."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-2-autorun-true-editor-visible-automatic-execution",
+    "href": "sql-test-editor.html#test-2-autorun-true-editor-visible-automatic-execution",
+    "title": "SQL Editor Tests",
+    "section": "Test 2: autorun: true — editor visible, automatic execution",
+    "text": "Test 2: autorun: true — editor visible, automatic execution\nThis test verifies that a SQL block with autorun: true is executed automatically when the editor is initialized, without requiring the user to click Run Code.\n\n\n\n\n\n\n\nExpected result: The editor is visible and the block is executed automatically when the page loads. The output table is displayed and the check passes without the user clicking Run Code."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-3-edit-false-with-autorun-true-autorun-has-no-effect",
+    "href": "sql-test-editor.html#test-3-edit-false-with-autorun-true-autorun-has-no-effect",
+    "title": "SQL Editor Tests",
+    "section": "Test 3: edit: false with autorun: true — autorun has no effect",
+    "text": "Test 3: edit: false with autorun: true — autorun has no effect\nThis test verifies that combining edit: false with autorun: true has no additional effect. The block is executed automatically regardless of autorun because edit: false already triggers automatic execution.\n\n\n\n\n\n\nExpected result: The block is executed automatically. No editor is visible. The behavior is identical to edit: false alone."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-4-schema-aware-autocomplete",
+    "href": "sql-test-editor.html#test-4-schema-aware-autocomplete",
+    "title": "SQL Editor Tests",
+    "section": "Test 4: Schema-aware Autocomplete",
+    "text": "Test 4: Schema-aware Autocomplete\nThis section tests that the SQL editor suggests table and column names based on the current PGlite schema.\n\nTest 4.1: Autocomplete After Execution\nThis test verifies that after executing a SQL block that creates a table, the editor suggests the table name and its columns when typing.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor in the second block suggests autocomplete_items as a table name and id, label, amount as column names when typing.\n\n\n\nTest 4.2: Autocomplete is Environment-specific\nThis test verifies that autocomplete suggestions are based on the current environment. Tables from a different environment should not appear as suggestions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The editor in ex_autocomplete_a suggests only table_env_a, and the editor in ex_autocomplete_b suggests only table_env_b. Tables from different environments do not appear in each other’s autocomplete suggestions.\n\n\n\nTest 4.3: Autocomplete in Global Environment\nThis test verifies that tables created in global SQL blocks appear as autocomplete suggestions in later global blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor suggests global_autocomplete and its columns id, name, score in the second block.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html#test-5-autocomplete-available-before-first-execution",
+    "href": "sql-test-editor.html#test-5-autocomplete-available-before-first-execution",
+    "title": "SQL Editor Tests",
+    "section": "Test 5: Autocomplete available before first execution",
+    "text": "Test 5: Autocomplete available before first execution\nThis test verifies that when an exercise has a setup block, the schema is already available for autocomplete before the learner runs any code. The setup block is executed in a separate completion environment to enable early schema suggestions.\n\n\n\n\n\n\n\nExpected result: Before the exercise block is executed for the first time, the editor already suggests early_schema and its columns id, product, price. This confirms that the setup block is executed in a separate completion environment to enable schema-aware suggestions from the start."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-1-automatische-ausführung-ohne-editor-edit-false",
+    "href": "sql-test-editor.html#test-1-automatische-ausführung-ohne-editor-edit-false",
+    "title": "SQL Editor Tests",
+    "section": "Test 1: Automatische Ausführung ohne Editor (edit: false)",
+    "text": "Test 1: Automatische Ausführung ohne Editor (edit: false)\nThis test verifies that a SQL block with edit: false is executed automatically when the page loads, without displaying an editor to the user.\n\n\n\n\n\n\nExpected result: The block is executed automatically when the page loads. No editor is visible. The output table is displayed directly below the block."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-2-automatische-ausführung-mit-editor-autorun-true",
+    "href": "sql-test-editor.html#test-2-automatische-ausführung-mit-editor-autorun-true",
+    "title": "SQL Editor Tests",
+    "section": "Test 2: Automatische Ausführung mit Editor (autorun: true)",
+    "text": "Test 2: Automatische Ausführung mit Editor (autorun: true)\nThis test verifies that a SQL block with autorun: true is executed automatically when the editor is initialized, without requiring the user to click Run Code.\n\n\n\n\n\n\n\nExpected result: The editor is visible and the block is executed automatically when the page loads. The output table is displayed and the check passes without the user clicking Run Code."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-3-kombination-von-edit-false-und-autorun-true",
+    "href": "sql-test-editor.html#test-3-kombination-von-edit-false-und-autorun-true",
+    "title": "SQL Editor Tests",
+    "section": "Test 3: Kombination von edit: false und autorun: true",
+    "text": "Test 3: Kombination von edit: false und autorun: true\nThis test verifies that combining edit: false with autorun: true has no additional effect. The block is executed automatically regardless of autorun because edit: false already triggers automatic execution.\n\n\n\n\n\n\nExpected result: The block is executed automatically. No editor is visible. The behavior is identical to edit: false alone."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-4-schemaabhängiges-autocomplete",
+    "href": "sql-test-editor.html#test-4-schemaabhängiges-autocomplete",
+    "title": "SQL Editor Tests",
+    "section": "Test 4: Schemaabhängiges Autocomplete",
+    "text": "Test 4: Schemaabhängiges Autocomplete\nThis section tests that the SQL editor suggests table and column names based on the current PGlite schema.\n\nTest 4.1: Autocomplete nach Ausführung\nThis test verifies that after executing a SQL block that creates a table, the editor suggests the table name and its columns when typing.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor in the second block suggests autocomplete_items as a table name and id, label, amount as column names when typing.\n\n\n\nTest 4.2: Autocomplete ist Environment-spezifisch\nThis test verifies that autocomplete suggestions are based on the current environment. Tables from a different environment should not appear as suggestions.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The editor in ex_autocomplete_a suggests only table_env_a, and the editor in ex_autocomplete_b suggests only table_env_b. Tables from different environments do not appear in each other’s autocomplete suggestions.\n\n\n\nTest 4.3: Autocomplete im globalen Environment\nThis test verifies that tables created in global SQL blocks appear as autocomplete suggestions in later global blocks.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: After executing the first block, the editor suggests global_autocomplete and its columns id, name, score in the second block."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-5-autocomplete-vor-der-ersten-ausführung",
+    "href": "sql-test-editor.html#test-5-autocomplete-vor-der-ersten-ausführung",
+    "title": "SQL Editor Tests",
+    "section": "Test 5: Autocomplete vor der ersten Ausführung",
+    "text": "Test 5: Autocomplete vor der ersten Ausführung\nThis test verifies that when an exercise has a setup block, the schema is already available for autocomplete before the learner runs any code. The setup block is executed in a separate completion environment to enable early schema suggestions.\n\n\n\n\n\n\n\nExpected result: Before the exercise block is executed for the first time, the editor already suggests early_schema and its columns id, product, price. This confirms that the setup block is executed in a separate completion environment to enable schema-aware suggestions from the start."
+  },
+  {
+    "objectID": "sql-test-editor.html#test-1-automatic-execution-without-editor",
+    "href": "sql-test-editor.html#test-1-automatic-execution-without-editor",
+    "title": "SQL Editor Tests",
+    "section": "Test 1: Automatic Execution Without Editor",
+    "text": "Test 1: Automatic Execution Without Editor\nThis test verifies that a SQL block with edit: false is executed automatically when the page loads, without displaying an editor to the user.\n\n\n\n\n\n\nExpected result: The block is executed automatically when the page loads. No editor is visible. The output table is displayed directly below the block.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html#test-2-automatic-execution-with-editor",
+    "href": "sql-test-editor.html#test-2-automatic-execution-with-editor",
+    "title": "SQL Editor Tests",
+    "section": "Test 2: Automatic Execution With Editor",
+    "text": "Test 2: Automatic Execution With Editor\nThis test verifies that a SQL block with autorun: true is executed automatically when the editor is initialized, without requiring the user to click Run Code.\n\n\n\n\n\n\n\nExpected result: The editor is visible and the block is executed automatically when the page loads. The output table is displayed and the check passes without the user clicking Run Code.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html#test-3-combining-edit-false-and-autorun-true",
+    "href": "sql-test-editor.html#test-3-combining-edit-false-and-autorun-true",
+    "title": "SQL Editor Tests",
+    "section": "Test 3: Combining edit: false and autorun: true",
+    "text": "Test 3: Combining edit: false and autorun: true\nThis test verifies that combining edit: false with autorun: true has no additional effect. The block is executed automatically regardless of autorun because edit: false already triggers automatic execution.\n\n\n\n\n\n\nExpected result: The block is executed automatically. No editor is visible. The behavior is identical to edit: false alone.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-editor.html#test-5-autocomplete-before-first-execution",
+    "href": "sql-test-editor.html#test-5-autocomplete-before-first-execution",
+    "title": "SQL Editor Tests",
+    "section": "Test 5: Autocomplete Before First Execution",
+    "text": "Test 5: Autocomplete Before First Execution\nThis test verifies that when an exercise has a setup block, the schema is already available for autocomplete before the learner runs any code. The setup block is executed in a separate completion environment to enable early schema suggestions.\n\n\n\n\n\n\n\nExpected result: Before the exercise block is executed for the first time, the editor already suggests early_schema and its columns id, product, price. This confirms that the setup block is executed in a separate completion environment to enable schema-aware suggestions from the start.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Editor Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html",
+    "href": "sql-test-meta.html",
+    "title": "SQL Meta Command Tests",
+    "section": "",
+    "text": "This document tests psql-style meta commands in the SQL extension, including table listing, column inspection, role listing, environment isolation, and autocomplete for meta commands.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-1-list-all-tables-in-current-environment",
+    "href": "sql-test-meta.html#test-1-list-all-tables-in-current-environment",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 1: — List all tables in current environment",
+    "text": "Test 1: — List all tables in current environment\nThis test verifies that \\dt lists all tables in the current PGlite environment.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The output lists meta_table_a and meta_table_b as available tables in the current environment."
+  },
+  {
+    "objectID": "sql-test-meta.html#test-2-ablename-show-columns-of-a-specific-table",
+    "href": "sql-test-meta.html#test-2-ablename-show-columns-of-a-specific-table",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 2: ablename — Show columns of a specific table",
+    "text": "Test 2: ablename — Show columns of a specific table\nThis test verifies that \\d tablename shows the column names and data types of a specific table.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The output shows the four columns id, name, score, and active with their respective data types."
+  },
+  {
+    "objectID": "sql-test-meta.html#test-3-list-database-roles",
+    "href": "sql-test-meta.html#test-3-list-database-roles",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 3: — List database roles",
+    "text": "Test 3: — List database roles\nThis test verifies that \\du lists the available database roles in the current PGlite instance.\n\n\n\n\n\n\nExpected result: The output lists the available database roles. Since PGlite runs as a single-user in-browser database, typically only one role is shown."
+  },
+  {
+    "objectID": "sql-test-meta.html#test-4-meta-commands-are-environment-specific",
+    "href": "sql-test-meta.html#test-4-meta-commands-are-environment-specific",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 4: Meta commands are environment-specific",
+    "text": "Test 4: Meta commands are environment-specific\nThis test verifies that \\dt in one exercise environment does not show tables from a different exercise environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The \\dt output in ex_meta_a shows only table_only_in_a. The \\dt output in ex_meta_b shows only table_only_in_b. Tables from different environments do not appear in each other’s listings."
+  },
+  {
+    "objectID": "sql-test-meta.html#test-5-meta-commands-in-the-global-environment",
+    "href": "sql-test-meta.html#test-5-meta-commands-in-the-global-environment",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 5: Meta Commands in the Global Environment",
+    "text": "Test 5: Meta Commands in the Global Environment\nThis test verifies that \\dt in a global SQL block shows only tables created in the global environment, not tables from exercise environments.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The \\dt in the exercise block shows only exercise_meta_table. The \\dt in the global block shows all global available tables. Tables from exercises are not visible in the global environment and vice versa.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-6-invalid-meta-command",
+    "href": "sql-test-meta.html#test-6-invalid-meta-command",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 6: Invalid meta command",
+    "text": "Test 6: Invalid meta command\nThis test verifies that an invalid meta command produces a meaningful error message rather than crashing the page.\n\n\n\n\n\n\nExpected result: The block produces an error message indicating that the meta command is not recognized. The page remains functional."
+  },
+  {
+    "objectID": "sql-test-meta.html#test-7-meta-command-autocomplete",
+    "href": "sql-test-meta.html#test-7-meta-command-autocomplete",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 7: Meta Command Autocomplete",
+    "text": "Test 7: Meta Command Autocomplete\nThis test verifies that the SQL editor suggests available meta commands when the user types a backslash.\n\n\n\n\n\n\nExpected result: When typing \\ in the editor, the autocomplete suggests available meta commands such as \\dt, \\d, \\du. This confirms that meta commands are registered as a separate autocomplete group alongside schema-based suggestions.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-1-table-listing",
+    "href": "sql-test-meta.html#test-1-table-listing",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 1: Table Listing",
+    "text": "Test 1: Table Listing\nThis test verifies that \\dt lists all tables in the current PGlite environment.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The output lists meta_table_a and meta_table_b as available tables in the current environment.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-2-column-inspection",
+    "href": "sql-test-meta.html#test-2-column-inspection",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 2: Column Inspection",
+    "text": "Test 2: Column Inspection\nThis test verifies that \\d tablename shows the column names and data types of a specific table.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The output shows Table “public.meta_columns_test”. Column details are returned as formatted text by psql-describe but are not fully rendered in tabular form by the SQL evaluator’s normalizeDescribeOutput function.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-3-role-listing",
+    "href": "sql-test-meta.html#test-3-role-listing",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 3: Role Listing",
+    "text": "Test 3: Role Listing\nThis test verifies that \\du lists the available database roles in the current PGlite instance.\n\n\n\n\n\n\nExpected result: The output lists the available database roles. Since PGlite runs as a single-user in-browser database, typically only one role is shown.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-4-environment-isolation-of-meta-commands",
+    "href": "sql-test-meta.html#test-4-environment-isolation-of-meta-commands",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 4: Environment Isolation of Meta Commands",
+    "text": "Test 4: Environment Isolation of Meta Commands\nThis test verifies that \\dt in one exercise environment does not show tables from a different exercise environment.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The \\dt output in ex_meta_a shows only table_only_in_a. The \\dt output in ex_meta_b shows only table_only_in_b. Tables from different environments do not appear in each other’s listings.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-meta.html#test-6-invalid-meta-command-handling",
+    "href": "sql-test-meta.html#test-6-invalid-meta-command-handling",
+    "title": "SQL Meta Command Tests",
+    "section": "Test 6: Invalid Meta Command Handling",
+    "text": "Test 6: Invalid Meta Command Handling\nThis test verifies that an invalid meta command produces a meaningful error message rather than crashing the page.\n\n\n\n\n\n\nExpected result: The block produces an error message indicating that the meta command is not recognized. The page remains functional.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Meta Command Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html",
+    "href": "sql-test-exercises.html",
+    "title": "SQL Exercise Tests",
+    "section": "",
+    "text": "This document tests SQL exercise behavior including setup code execution, isolation from the global environment, shared setup across multiple exercises, and the Start Over functionality.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html#test-1-basic-exercise-with-setup",
+    "href": "sql-test-exercises.html#test-1-basic-exercise-with-setup",
+    "title": "SQL Exercise Tests",
+    "section": "Test 1: Basic exercise with setup",
+    "text": "Test 1: Basic exercise with setup\nThis test verifies that setup code is executed before the learner’s code, and that the learner can access tables created in the setup block.\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access the products table created in the setup block. The check passes because the table contains exactly three rows.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html#test-2-sql-exercises-are-fully-isolated-from-the-global-database",
+    "href": "sql-test-exercises.html#test-2-sql-exercises-are-fully-isolated-from-the-global-database",
+    "title": "SQL Exercise Tests",
+    "section": "Test 2: SQL exercises are fully isolated from the global database",
+    "text": "Test 2: SQL exercises are fully isolated from the global database\nThis test verifies that SQL exercises cannot access tables created in normal global SQL blocks. Unlike WebR and Python exercises, each SQL exercise uses its own dedicated PGlite instance. This means that global SQL blocks and exercise blocks do not share the same database state, even when given the same envir label.\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: The exercise block produces the error relation \"global_ref\" does not exist. This confirms that SQL exercises are fully isolated from the global database state. The correct way to prepare data for an exercise is to use a setup: true block, not a global SQL block.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html#test-3-setup-block-is-the-correct-way-to-share-data-with-exercises",
+    "href": "sql-test-exercises.html#test-3-setup-block-is-the-correct-way-to-share-data-with-exercises",
+    "title": "SQL Exercise Tests",
+    "section": "Test 3: Setup block is the correct way to share data with exercises",
+    "text": "Test 3: Setup block is the correct way to share data with exercises\nThis test verifies that a setup: true block is executed inside the exercise’s own PGlite instance and is therefore the correct mechanism for preparing data that exercises can access.\n\n\n\n\n\n\n\n\nExpected result: The exercise block can access setup_ref because it was created inside the exercise’s own PGlite instance via the setup block. The check passes. This contrasts with Test 2, where a global block could not be accessed from an exercise.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html#test-4-shared-setup-for-multiple-exercises",
+    "href": "sql-test-exercises.html#test-4-shared-setup-for-multiple-exercises",
+    "title": "SQL Exercise Tests",
+    "section": "Test 4: Shared setup for multiple exercises",
+    "text": "Test 4: Shared setup for multiple exercises\nThis test verifies that a single setup block can be shared across multiple exercises by providing a list of exercise labels.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpected result: Both exercises can access shared_data from the shared setup block. Both checks pass.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  },
+  {
+    "objectID": "sql-test-exercises.html#test-5-start-over-resets-state-and-replays-setup",
+    "href": "sql-test-exercises.html#test-5-start-over-resets-state-and-replays-setup",
+    "title": "SQL Exercise Tests",
+    "section": "Test 5: Start Over resets state and replays setup",
+    "text": "Test 5: Start Over resets state and replays setup\nThis test verifies that clicking Start Over resets the editor content to the original code and replays the setup block, restoring the exercise to its initial state.\n\n\n\n\n\n\n\n\nExpected result: After running the exercise block, the table contains two rows and the check passes. After clicking Start Over, the editor resets to the original code and the setup is replayed. Running the block again should again produce two rows, confirming that the state was cleanly reset.",
+    "crumbs": [
+      "SQL integration",
+      "SQL Exercise Tests"
+    ]
+  }
+]
