@@ -59,6 +59,9 @@ export class SqlGrader extends ExerciseGrader {
     
     const result = await this.evaluator.executeCheck(chekckCodeWithContext);
 
+    // Cleanup: remove __quarto_check_context after check execution
+    await this.evaluator.executeCheck("DROP TABLE IF EXISTS __quarto_check_context;");
+    
     if (!result) {
       return {
         correct: false,
