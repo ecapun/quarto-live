@@ -112,7 +112,7 @@ A normal SQL block shares the global database state with other normal blocks on 
 
 ## Project structure
 
-**Source files (`src/`)**
+**Source files (`live-runtime/src/`)**
 - `evaluate-sql.ts` - SQL evaluator (execution, meta commands)
 - `grader-sql.ts` - Grading logic (check execution, feedback)
 - `environment.ts` - Environment management (PGlite instances)
